@@ -1,8 +1,7 @@
 #include "../../include/services/manager_services.h"
+#include <stdio.h>
 
-void add_movie() {
-    // TODO
-}
+void add_movie() { printf("Hello World"); }
 
 void edit_movie(int movie_id) {
     // TODO
