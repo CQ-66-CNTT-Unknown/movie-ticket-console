@@ -2,23 +2,31 @@
 
 ## Project Description
 
-Movie Ticket Console is a console-based cinema ticket booking project written in C. It is designed to simulate ticket-buying behavior in a terminal application, with separate flows for customers and managers.
+`Movie Ticket Console` is a console-based cinema ticket management project written in C. It simulates the core workflow of a movie ticket system in a terminal application, with separate responsibilities split across dedicated service modules.
 
-The project currently includes:
+The project is currently organized around:
 
-- authentication and role-based menu scaffolding
-- customer service modules for viewing movies, searching, booking, and ticket history
-- manager service modules for movie and screening management
-- CSV data files for movies, screenings, tickets, and users
+- `auth` services for login and role-based access
+- `movie` services for listing, searching, adding, editing, and deleting movies
+- `screening` services for viewing screenings, showing seat maps, creating screenings, and canceling screenings
+- `customer` services for booking tickets, canceling tickets, and viewing purchase history
+- `manager` services for administrative reporting such as revenue tracking
+- CSV-based data storage for movies, screenings, tickets, and users
 
-This repository is structured as a foundation for a larger movie ticket management system and is built with CMake.
+This structure makes the codebase easier to extend and maintain while keeping the application modular and straightforward to build with CMake.
+
+## Course Information
+- Course name: `IT1.103.3 - Advanced Programming`
+- Assignment title: `Course Project`
+- Instructor: `M.Sc.Tran Thi Dung`
+- Institution: `University of Transport and Communications Campus in Ho Chi Minh City`
 
 ## Requirements
-
-- GCC compiler
-- CMake
-- Ninja build system
-- IDE (VS Code is highly recommended)
+- Language: `C17`
+- Compiler: `GCC`
+- Build system: `CMake`
+- Build generator: `Ninja`
+- IDE: `VS Code` is highly recommended)
 
 ## Build and Run on Windows
 
@@ -45,13 +53,10 @@ cd movie-ticket-console
 
 3. After the build completes, open the project in your IDE or run the generated executable from the build folder.
 
-## Languages
 
-- C
-- PowerShell
-- CMake
+## Authors
 
-## Author
-
-- TTNguyen2505
-- trantrongnguyen2505@outlook.com
+- [`Tran Trong Nguyen` ](https://github.com/TTNguyen2505)- Student ID: `6651071099`
+- [`Le Phan Trung Dong`](https://github.com/trungdong158) - Student ID: `6651071016`
+- [`Nguyen Le Quy Trong`](https://github.com/pahmnguyen) - Student ID: `6651071084`
+- [`Nguyen Phuc Khai Tam`](https://github.com/NgpkTam0910) - Student ID: `6651071065`
