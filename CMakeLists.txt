@@ -15,6 +15,8 @@ set(PROJECT_SOURCES
     src/services/auth.c
     src/services/customer_services.c
     src/services/manager_services.c
+    src/services/movie_services.c
+    src/services/screening_services.c
     src/utils/show_actions_menu.c
 )
 
