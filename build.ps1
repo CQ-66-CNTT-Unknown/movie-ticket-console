@@ -1,6 +1,7 @@
 param(
     [switch]$Clean,
-    [switch]$Run
+    [switch]$Run,
+    [switch]$Export
 )
 
 # Optionally remove the build directory
@@ -41,4 +42,17 @@ if ($Run) {
     } else {
         Write-Warning "Executable not found at $exePath"
     }
+}
+
+# Optionally export the build
+if ($Export) {
+    $distDir = "dist"
+    Write-Host "Exporting production files to $distDir..."
+    if (Test-Path $distDir) { Remove-Item -Recurse -Force $distDir }
+    New-Item -ItemType Directory -Path "$distDir\data"
+
+    Copy-Item "build\movie-ticket-console.exe" -Destination "$distDir"
+    Copy-Item "data\*.csv" -Destination "$distDir\data\"
+
+    Write-Host "Export complete!"
 }
