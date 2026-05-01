@@ -17,7 +17,7 @@ set(PROJECT_SOURCES
     src/services/manager_services.c
     src/services/movie_services.c
     src/services/screening_services.c
-    src/utils/show_actions_menu.c
+    src/utils/menu.c
 )
 
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/"
