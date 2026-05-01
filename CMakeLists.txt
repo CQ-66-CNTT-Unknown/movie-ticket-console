@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 4.0)
 
-project(movie_ticket_console VERSION 1.0.0 LANGUAGES C)
+project(movie-ticket-console VERSION 1.0.0 LANGUAGES C)
 
 if(NOT CMAKE_C_COMPILER_ID STREQUAL "GNU")
     message(WARNING "This project is configured for GCC. Current compiler: ${CMAKE_C_COMPILER_ID}")
@@ -20,6 +20,10 @@ set(PROJECT_SOURCES
     src/utils/show_actions_menu.c
 )
 
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/"
+     DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/data"
+     FILES_MATCHING PATTERN "*.csv")
+     
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
 target_include_directories(${PROJECT_NAME}
