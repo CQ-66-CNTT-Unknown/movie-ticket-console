@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "../include/services/auth.h"
-#include "../include/utils/show_actions_menu.h"
+#include "../include/utils/menu.h"
 
 int main() {
     printf("Welcome to our cinema ticket booking system!\n");
