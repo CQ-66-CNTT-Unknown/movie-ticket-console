@@ -6,4 +6,4 @@
  * @param fields An array to store the parsed fields
  * @param max_fields The maximum number of fields to parse
  */
-void parse_csv_line(const char *line, char *fields[], int max_fields);
+void parse_csv_line(char *line, char *fields[], int max_fields);

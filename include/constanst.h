@@ -5,3 +5,6 @@
 
 #define MOVIE_SOURCE_PATH "data/movie.csv"
 #define SCREENING_SOURCE_PATH "data/screening.csv"
+
+#define N_MOVIES_FIELDS 3
+#define N_SCREENING_FIELDS 5

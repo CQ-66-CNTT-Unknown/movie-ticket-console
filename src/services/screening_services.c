@@ -2,24 +2,56 @@
 #include "../../include/constanst.h"
 #include "../../include/models/movie.h"
 #include "../../include/models/screening.h"
+#include "../../include/utils/csv_utils.h"
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 /**
- * @brief Get all movies from the
+ * @brief Get all movies from the system
  * @param movie_source The file source for movies
  * @return `MovieArray` containing all movies
  */
 static MovieArray get_all_movies(FILE *movie_source) {
-    MovieArray movie_array;
-    movie_array.movies = NULL;
-    movie_array.count = 0;
-    movie_array.capacity = 0;
+    MovieArray movie_array = {NULL, 0, 0};
 
-    // TODO
+    char buffer[LINE_DATA_BUFFER_SIZE];
+    fgets(buffer, sizeof(buffer), movie_source); // Skip header line
+
+    while (fgets(buffer, sizeof(buffer), movie_source)) {
+        buffer[strcspn(buffer, "\n")] = '\0';
+        char *fields[N_MOVIES_FIELDS];
+        parse_csv_line(buffer, fields, N_MOVIES_FIELDS);
+
+        if (movie_array.count >= movie_array.capacity) {
+            int new_capacity = (movie_array.capacity == 0) ? 4 : movie_array.capacity * 2;
+            Movie *new_movies = (Movie *) realloc(movie_array.movies, new_capacity * sizeof(Movie));
+
+            if (new_movies == NULL) {
+                fprintf(stderr, "Memory allocation failed for movies array\n");
+                free(movie_array.movies);
+                exit(EXIT_FAILURE);
+            }
+
+            movie_array.movies = new_movies;
+            movie_array.capacity = new_capacity;
+        }
+
+        Movie *current_movie = &movie_array.movies[movie_array.count];
+
+        current_movie->movie_id = atoi(fields[0]);
+
+        strncpy(current_movie->title, fields[1], sizeof(current_movie->title) - 1);
+        current_movie->title[sizeof(current_movie->title) - 1] = '\0';
+
+        current_movie->duration = atoi(fields[2]);
+
+        movie_array.count++;
+    }
+
 
     return movie_array;
 }
@@ -30,12 +62,41 @@ static MovieArray get_all_movies(FILE *movie_source) {
  * @return `ScreeningArray` containing all screenings
  */
 static ScreeningArray get_all_screening(FILE *screening_source) {
-    ScreeningArray screening_array;
-    screening_array.screenings = NULL;
-    screening_array.count = 0;
-    screening_array.capacity = 0;
+    ScreeningArray screening_array = {NULL, 0, 0};
 
-    // TODO
+    char buffer[LINE_DATA_BUFFER_SIZE];
+    fgets(buffer, sizeof(buffer), screening_source); // Skip header line
+
+    while (fgets(buffer, sizeof(buffer), screening_source)) {
+        buffer[strcspn(buffer, "\n")] = '\0';
+        char *fields[N_SCREENING_FIELDS];
+        parse_csv_line(buffer, fields, N_SCREENING_FIELDS);
+
+        if (screening_array.count >= screening_array.capacity) {
+            int new_capacity = (screening_array.capacity == 0) ? 4 : screening_array.capacity * 2;
+            Screening *new_screenings =
+                    (Screening *) realloc(screening_array.screenings, new_capacity * sizeof(Screening));
+
+            if (new_screenings == NULL) {
+                fprintf(stderr, "Memory allocation failed for screenings array\n");
+                free(screening_array.screenings);
+                exit(EXIT_FAILURE);
+            }
+
+            screening_array.screenings = new_screenings;
+            screening_array.capacity = new_capacity;
+        }
+
+        Screening *current_screening = &screening_array.screenings[screening_array.count];
+
+        current_screening->screening_id = atoi(fields[0]);
+        current_screening->movie_id = atoi(fields[1]);
+        current_screening->start_time = (time_t) atol(fields[2]);
+        current_screening->price = atof(fields[3]);
+        current_screening->room_number = atoi(fields[4]);
+
+        screening_array.count++;
+    }
 
     return screening_array;
 }
@@ -55,9 +116,9 @@ void view_screenings() {
     MovieArray movie_array = get_all_movies(movie_source);
     ScreeningArray screening_array = get_all_screening(screening_source);
 
-    printf("%-10s | %-50s | %-40s | %-20s | %-10s | %-10s\n", "Screening ID", "Movie", "Start time", "Duration (m)",
-           "Price ($)", "Room number");
-    int table_width = 10 + 50 + 20 + 20 + 10 + 10 + (5 * 3);
+    printf("%-12s | %-28s | %-28s | %-16s | %-12s | %-8s\n", "Screening ID", "Movie", "Start time", "Duration (m)",
+           "Price (VND)", "Room");
+    int table_width = 12 + 28 + 28 + 16 + 12 + 8 + (5 * 3);
     for (int i = 0; i < table_width; i++) {
         printf("-");
     }
@@ -72,7 +133,7 @@ void view_screenings() {
             time_str[strcspn(time_str, "\n")] = '\0';
 
             if (screening_array.screenings[i].movie_id == movie_array.movies[j].movie_id) {
-                printf("%-10d | %-50s | %-40s | %-20d | %-10.2f | %-10d\n", screening_array.screenings[i].screening_id,
+                printf("%-12d | %-28s | %-28s | %-16d | %-12.0f | %-8d\n", screening_array.screenings[i].screening_id,
                        movie_array.movies[j].title, time_str, movie_array.movies[j].duration,
                        screening_array.screenings[i].price, screening_array.screenings[i].room_number);
                 has_screening = true;
