@@ -4,6 +4,8 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 void display_all_movies() {
     // TODO
@@ -28,7 +30,19 @@ void edit_movie(int movie_id) {
  * @return The line number of the movie if found, or `-1` if not found
  */
 static int find_movie_position(int target_movie_id, FILE *movie_source) {
-    // TODO
+    char buffer[LINE_DATA_BUFFER_SIZE];
+    char *delimiter = ",";
+
+    fgets(buffer, LINE_DATA_BUFFER_SIZE, movie_source); // Skip the row of field names which is the first row
+    int current_line = 2;
+    while (fgets(buffer, LINE_DATA_BUFFER_SIZE, movie_source)) {
+        char *movie_id = strtok(buffer, delimiter);
+        if (atoi(movie_id) == target_movie_id)
+            return current_line;
+
+        current_line++;
+    }
+
     return -1;
 }
 
@@ -39,7 +53,19 @@ static int find_movie_position(int target_movie_id, FILE *movie_source) {
  * @return `true` if the movie is scheduled, `false` otherwise
  */
 static bool is_movie_scheduled(int target_movie_id, FILE *screening_source) {
-    // TODO
+    char buffer[LINE_DATA_BUFFER_SIZE];
+    char *delimiter = ",";
+
+    fgets(buffer, LINE_DATA_BUFFER_SIZE, screening_source); // Skip the first row which contains the field names
+
+    while (fgets(buffer, LINE_DATA_BUFFER_SIZE, screening_source)) {
+        strtok(buffer, delimiter); // Skip the first column which is the screening ID
+        char *movie_id = strtok(NULL, delimiter);
+
+        if (atoi(movie_id) == target_movie_id)
+            return true;
+    }
+
     return false;
 }
 
@@ -80,7 +106,7 @@ void delete_movie(int movie_id) {
         return;
     }
 
-    printf("Delete movie with ID %d [y/N(Default)]", movie_id);
+    printf("Delete movie with ID %d [y/N(Default)]: ", movie_id);
     char decision;
     scanf("%c", &decision);
     int c;
@@ -111,5 +137,5 @@ void delete_movie(int movie_id) {
     fclose(temp);
 
     remove("data/movie.csv");
-    rename("temp.txt", "data/movie.csv")
+    rename("temp.txt", "data/movie.csv");
 }
