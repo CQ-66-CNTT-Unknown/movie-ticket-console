@@ -37,7 +37,7 @@ int input_id(const char *prompt, int buffer_size) {
         *newline = '\0';
     else {
         int c;
-        while ((c = getchar()) != '\n' && c != EOF) //Clear buffer to avoid unexpected input next time.
+        while ((c = getchar()) != '\n' && c != EOF) // Clear buffer to avoid unexpected input next time.
             ;
     }
 
