@@ -8,3 +8,4 @@
 
 #define N_MOVIES_FIELDS 3
 #define N_SCREENING_FIELDS 5
+#define N_TICKETS_FIELDS 4
