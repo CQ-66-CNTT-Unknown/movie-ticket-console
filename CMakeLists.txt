@@ -20,6 +20,8 @@ set(PROJECT_SOURCES
     src/utils/menu.c
     src/utils/input_utils.c
     src/utils/csv_utils.c
+    src/repos/movie_repo.c
+    src/repos/screening_repo.c
 )
 
 file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/data/"
