@@ -12,52 +12,83 @@
 #include <string.h>
 #include <time.h>
 
-void view_screenings() {
-    FILE *movie_source = fopen(MOVIE_SOURCE_PATH, "r");
-    FILE *screening_source = fopen(SCREENING_SOURCE_PATH, "r");
-    if (movie_source == NULL || screening_source == NULL) {
-        printf("Data is not available!\n");
-        if (movie_source != NULL)
-            fclose(movie_source);
-        if (screening_source != NULL)
-            fclose(screening_source);
-        return;
-    }
-
-    MovieArray movie_array = get_all_movies(movie_source);
-    ScreeningArray screening_array = get_all_screenings(screening_source);
-
+/**
+ * @brief Print the header of the screening table
+ */
+static void print_screening_table_header() {
     printf("%-12s | %-28s | %-28s | %-16s | %-12s | %-8s\n", "Screening ID", "Movie", "Start time", "Duration (m)",
            "Price (VND)", "Room");
     int table_width = 12 + 28 + 28 + 16 + 12 + 8 + (5 * 3);
-    for (int i = 0; i < table_width; i++) {
+    for (int i = 0; i < table_width; i++)
         printf("-");
-    }
     printf("\n");
+}
 
-    bool has_screening = false;
+/**
+ * @brief Find a movie by its ID
+ * @param movie_array The array of movies
+ * @param movie_id The ID of the movie to find
+ * @return A pointer to the found movie, or `NULL` if not found
+ */
+static Movie *find_movie_by_id(const MovieArray *movie_array, int movie_id) {
+    for (int i = 0; i < movie_array->count; i++) {
+        if (movie_array->movies[i].movie_id == movie_id)
+            return &movie_array->movies[i];
+    }
+    return NULL;
+}
 
-    for (int i = 0; i < screening_array.count; i++) {
-        for (int j = 0; j < movie_array.count; j++) {
+/**
+ * @brief Print information about a screening
+ * @param screening The screening to print information for
+ * @param movie The movie associated with the screening
+ */
+static void print_screening_info(Screening *screening, Movie *movie) {
+    char time_str[26];
+    strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", localtime(&screening->start_time));
 
-            char *time_str = ctime(&screening_array.screenings[i].start_time);
-            time_str[strcspn(time_str, "\n")] = '\0';
+    printf("%-12d | %-28s | %-28s | %-16d | %-12.0f | %-8d\n", screening->screening_id, movie->title, time_str,
+           movie->duration, screening->price, screening->room_number);
+}
 
-            if (screening_array.screenings[i].movie_id == movie_array.movies[j].movie_id) {
-                printf("%-12d | %-28s | %-28s | %-16d | %-12.0f | %-8d\n", screening_array.screenings[i].screening_id,
-                       movie_array.movies[j].title, time_str, movie_array.movies[j].duration,
-                       screening_array.screenings[i].price, screening_array.screenings[i].room_number);
-                has_screening = true;
-                break;
-            }
+void view_screenings() {
+    MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
+    ScreeningArray *screening_array = get_all_screenings(SCREENING_SOURCE_PATH);
+
+    if (screening_array == NULL) {
+        fprintf(stderr, "Failed to load screening data.\n");
+        return;
+    }
+
+    if (movie_array == NULL) {
+        fprintf(stderr, "Failed to load movie data.\n");
+        free(screening_array);
+        return;
+    }
+
+    if (screening_array->count == 0) {
+        fprintf(stderr, "No screenings available.\n");
+        free(screening_array);
+        free(movie_array);
+        return;
+    }
+
+    print_screening_table_header();
+
+    for (int i = 0; i < screening_array->count; i++) {
+        Screening *current_screening = &screening_array->screenings[i];
+        Movie *associated_movie = find_movie_by_id(movie_array, current_screening->movie_id);
+
+        if (associated_movie != NULL) {
+            print_screening_info(current_screening, associated_movie);
+        } else {
+            fprintf(stderr, "Warning: Movie with ID %d not found for screening ID %d\n", current_screening->movie_id,
+                    current_screening->screening_id);
         }
     }
 
-    if (!has_screening)
-        printf("No screenings available.\n");
-
-    fclose(movie_source);
-    fclose(screening_source);
+    free(screening_array);
+    free(movie_array);
 }
 
 void show_seat_map(int screening_id) {
