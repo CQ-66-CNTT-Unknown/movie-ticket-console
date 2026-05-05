@@ -4,6 +4,7 @@
 #include "../../include/utils/csv_utils.h"
 
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -64,4 +65,30 @@ ScreeningArray *get_all_screenings(const char *screening_source_path) {
 
     fclose(screening_source);
     return screening_array;
+}
+
+bool is_movie_scheduled(int target_movie_id, const char *screening_source_path) {
+    FILE *screening_source = fopen(screening_source_path, "r");
+    if (screening_source == NULL) {
+        fprintf(stderr, "Error opening screening source file: %s\n", screening_source_path);
+        return false;
+    }
+
+    char buffer[LINE_DATA_BUFFER_SIZE];
+    char *delimiter = ",";
+
+    fgets(buffer, LINE_DATA_BUFFER_SIZE, screening_source); // Skip the first row which contains the field names
+
+    while (fgets(buffer, LINE_DATA_BUFFER_SIZE, screening_source)) {
+        strtok(buffer, delimiter); // Skip the first column which is the screening ID
+        char *movie_id = strtok(NULL, delimiter);
+
+        if (atoi(movie_id) == target_movie_id) {
+            fclose(screening_source);
+            return true;
+        }
+    }
+
+    fclose(screening_source);
+    return false;
 }
