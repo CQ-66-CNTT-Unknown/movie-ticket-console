@@ -9,4 +9,4 @@
  * @param screening_source_path The file path for screenings
  * @return pointer to ScreeningArray containing all screenings or `NULL` if an error occurs
  */
-ScreeningArray* get_all_screenings(const char *screening_source_path);
+ScreeningArray *get_all_screenings(const char *screening_source_path);
