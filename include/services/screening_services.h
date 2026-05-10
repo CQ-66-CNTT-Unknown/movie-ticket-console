@@ -6,6 +6,12 @@
 void view_screenings();
 
 /**
+ * @brief choose a screening
+ * @param a it will be returned after *a is asigned inside the function
+ */
+Screening choose_screening(Screening *a);
+
+/**
  * @brief Show the seat map for a specific screening
  * @param screening_id The ID of the screening for which to show the seat map
  */
