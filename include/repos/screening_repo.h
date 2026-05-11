@@ -19,3 +19,11 @@ ScreeningArray *get_all_screenings(const char *screening_source_path);
  * @return `true` if the movie is scheduled, `false` otherwise
  */
 bool is_movie_scheduled(int target_movie_id, const char *screening_source_path);
+
+/**
+ * @brief Delete a screening record from the system
+ * @param screening_id The ID of the screening to delete
+ * @param screening_source_path The file path for screenings
+ * @return pointer to the deleted Screening or `NULL` if an error occurs
+ */
+Screening *delete_screening_record(int screening_id, const char *screening_source_path);

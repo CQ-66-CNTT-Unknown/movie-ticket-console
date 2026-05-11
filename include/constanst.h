@@ -10,3 +10,7 @@
 #define N_MOVIES_FIELDS 3
 #define N_SCREENING_FIELDS 5
 #define N_TICKETS_FIELDS 4
+
+#define TEMP_FILE_NAME "temp_file.csv"
+
+#define DIR_LENGTH 256
