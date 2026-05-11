@@ -21,6 +21,7 @@ set(PROJECT_SOURCES
     src/utils/input_utils.c
     src/utils/csv_utils.c
     src/utils/decision_utils.c
+    src/utils/get_temp_file_path.c
     src/repos/movie_repo.c
     src/repos/screening_repo.c
     src/repos/ticket_repo.c
