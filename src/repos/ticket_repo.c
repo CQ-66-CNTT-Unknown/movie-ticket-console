@@ -1,6 +1,7 @@
 #include "../../include/repos/ticket_repo.h"
 #include "../../include/constanst.h"
 #include "../../include/utils/csv_utils.h"
+#include "../../include/utils/get_temp_file_path.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -63,4 +64,46 @@ TicketArray *get_all_tickets(const char *ticket_source_path) {
 
     fclose(ticket_source);
     return ticket_array;
+}
+
+void delete_ticket_record_by_screening_id(int screening_id, const char *ticket_source_path) {
+    FILE *ticket_source = fopen(ticket_source_path, "r");
+    if (ticket_source == NULL) {
+        fprintf(stderr, "Failed to open ticket source file: %s\n", ticket_source_path);
+        return;
+    }
+
+    char *temp_path = get_temp_file_path(ticket_source_path);
+
+    FILE *temp_file = fopen(temp_path, "w");
+    if (temp_file == NULL) {
+        fprintf(stderr, "Failed to create temporary file for ticket deletion\n");
+        fclose(ticket_source);
+        free(temp_path);
+        return;
+    }
+
+    char buffer[LINE_DATA_BUFFER_SIZE];
+    fgets(buffer, LINE_DATA_BUFFER_SIZE, ticket_source); // Read and write header line
+    fprintf(temp_file, "%s", buffer);
+
+    while (fgets(buffer, LINE_DATA_BUFFER_SIZE, ticket_source)) {
+        char temp_buffer[LINE_DATA_BUFFER_SIZE];
+        strcpy(temp_buffer, buffer);
+
+        char *fields[N_TICKETS_FIELDS];
+        parse_csv_line(buffer, fields, N_TICKETS_FIELDS);
+
+        if (atoi(fields[1]) != screening_id) {
+            fprintf(temp_file, "%s", temp_buffer);
+        }
+    }
+
+    fclose(ticket_source);
+    fclose(temp_file);
+
+    remove(ticket_source_path);
+    rename(temp_path, ticket_source_path);
+
+    free(temp_path);
 }
