@@ -1,58 +1,43 @@
 param(
     [switch]$Clean,
-    [switch]$Run,
-    [switch]$Export
+    [switch]$Export,
+    [switch]$Run
 )
 
-# Optionally remove the build directory
 if ($Clean) {
-    if (Test-Path build) {
-        Write-Host "Cleaning build directory..."
-        Remove-Item -Recurse -Force build
-    } else {
-        Write-Host "No existing build directory to clean."
-    }
+    Write-Host "Cleaning all build and distribution artifacts..." -ForegroundColor Cyan
+    if (Test-Path build) { Remove-Item -Recurse -Force build }
+    if (Test-Path dist) { Remove-Item -Recurse -Force dist }
 }
 
-# Configure the project
 cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc
-
 if ($LASTEXITCODE -ne 0) {
     Write-Error "CMake configuration failed."
     exit $LASTEXITCODE
 }
 
-# Build the project
 cmake --build build
-
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Build failed."
     exit $LASTEXITCODE
 }
+Write-Host "Build completed successfully!" -ForegroundColor Green
 
-Write-Host "Build completed successfully."
-
-# Optionally run the executable
-if ($Run) {
-    $exePath = "build\movie_ticket_console.exe"
-
-    if (Test-Path $exePath) {
-        Write-Host "Running movie_ticket_console.exe..."
-        & $exePath
-    } else {
-        Write-Warning "Executable not found at $exePath"
-    }
-}
-
-# Optionally export the build
-if ($Export) {
+if ($Export -or $Run) {
     $distDir = "dist"
-    Write-Host "Exporting production files to $distDir..."
+    Write-Host "Exporting files to $distDir..." -ForegroundColor Cyan
     if (Test-Path $distDir) { Remove-Item -Recurse -Force $distDir }
-    New-Item -ItemType Directory -Path "$distDir\data"
+    New-Item -ItemType Directory -Path "$distDir\data" | Out-Null
 
     Copy-Item "build\movie-ticket-console.exe" -Destination "$distDir"
     Copy-Item "data\*.csv" -Destination "$distDir\data\"
+    Write-Host "Export complete!" -ForegroundColor Green
+}
 
-    Write-Host "Export complete!"
+if ($Run) {
+    $exePath = "dist\movie-ticket-console.exe"
+    Write-Host "Running from dist directory..." -ForegroundColor Yellow
+    Push-Location dist
+    & ".\movie-ticket-console.exe"
+    Pop-Location
 }
