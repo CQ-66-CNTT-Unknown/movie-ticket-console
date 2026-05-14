@@ -25,5 +25,6 @@ void create_screening(int movie_id);
 
 /**
  * @brief Cancel an existing screening
+ * @param screening_id The ID of the screening to cancel
  */
-void cancel_screening();
+void cancel_screening(int screening_id);

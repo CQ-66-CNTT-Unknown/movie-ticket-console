@@ -10,3 +10,11 @@
  * @return pointer to TicketArray containing all retrieved tickets or `NULL` if an error occurs
  */
 TicketArray *get_all_tickets(const char *ticket_source_path);
+
+
+/**
+ * @brief Deletes a ticket with the specified ID from the source
+ * @param ticket_source_path The file path to the ticket source
+ * @param screening_id The ID of the screening for which to delete tickets
+ */
+void delete_ticket_record_by_screening_id(int screening_id, const char *ticket_source_path);

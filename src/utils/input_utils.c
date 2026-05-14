@@ -28,7 +28,10 @@ static int handle_input_id(const char *user_input) {
 
 
 int input_id(const char *prompt, int buffer_size) {
-    char user_input[buffer_size];
+    char *user_input = (char *) malloc((size_t) buffer_size);
+    if (user_input == NULL)
+        return -1;
+
     printf("%s", prompt);
     fgets(user_input, buffer_size, stdin);
 
@@ -41,7 +44,9 @@ int input_id(const char *prompt, int buffer_size) {
             ;
     }
 
-    return handle_input_id(user_input);
+    int result = handle_input_id(user_input);
+    free(user_input);
+    return result;
 }
 
 void nhapSo(int *so)

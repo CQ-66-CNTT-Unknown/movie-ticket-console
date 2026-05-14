@@ -8,6 +8,7 @@
 #include "../../include/repos/ticket_repo.h"
 #include "../../include/utils/csv_utils.h"
 #include "../../include/utils/input_utils.h"
+#include "../../include/utils/decision_utils.h"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -250,6 +251,40 @@ void create_screening(int movie_id) {
     free(movie_array);
 }
 
-void cancel_screening() {
-    // TODO
+/**
+ * @brief Print details about a screening
+ * @param screening The screening for which to print details
+ */
+static void print_screening_details(Screening *screening) {
+    printf("Screening Details:\n");
+    printf("ID: %d\n", screening->screening_id);
+    printf("Movie ID: %d\n", screening->movie_id);
+    char time_str[26];
+    strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", localtime(&screening->start_time));
+    printf("Start Time: %s\n", time_str);
+    printf("Price: %.0f VND\n", screening->price);
+    printf("Room Number: %d\n", screening->room_number);
+}
+
+void cancel_screening(int screening_id) {
+    if (screening_id == -1) {
+        printf("The ID is invalid!\n");
+        return;
+    }
+
+    if (!is_decision_yes("Cancel screening with ID"))
+        return;
+
+    delete_ticket_record_by_screening_id(screening_id, TICKET_SOURCE_PATH);
+
+    Screening *deleted_screening = delete_screening_record(screening_id, SCREENING_SOURCE_PATH);
+
+
+    if (deleted_screening != NULL) {
+        printf("Screening cancelled successfully!\n");
+        print_screening_details(deleted_screening);
+        free(deleted_screening);
+    } else {
+        printf("Failed to cancel the screening.\n");
+    }
 }
