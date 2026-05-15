@@ -14,6 +14,7 @@ void book_ticket(int screening_id, char seat_code);
 void cancel_ticket(int current_user_id); 
 
 /**
- * @brief View purchase history
+ * @brief View purchase history for a specific user
+ * @param current_user_id The ID of the user requesting to view history
  */
-void view_purchase_history();
+void view_purchase_history(int current_user_id);

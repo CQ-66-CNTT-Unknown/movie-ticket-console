@@ -41,7 +41,7 @@ int main() {
                     cancel_ticket(user.user_id);
                     break;
                 case 6:
-                    view_purchase_history();
+                    view_purchase_history(user.user_id);
                     break;
                 case 7:
                     printf("Da dang xuat !!!!!\n");

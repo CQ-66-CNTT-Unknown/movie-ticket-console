@@ -512,6 +512,102 @@ void cancel_ticket(int current_user_id) {
     if (screenings) { free(screenings->screenings); free(screenings); }
 }
 
-void view_purchase_history() {
-    printf("Chuc nang xem lich su dang phat trien.\n");
+void view_purchase_history(int current_user_id) {
+    // Error retrieving ticket file
+    TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
+    if (tickets == NULL) {
+        printf("\n[Loi] Khong the truy xuat du lieu ve tu file!\n");
+        return;
+    }
+
+    // Get showtime information (room, price, time).
+    ScreeningArray *screenings = get_all_screenings(SCREENING_SOURCE_PATH);
+    if (screenings == NULL) {
+        printf("\n[Loi] Khong the truy xuat du lieu suat chieu!\n");
+        if (tickets->tickets) free(tickets->tickets);
+        free(tickets);
+        return;
+    }
+
+    // Count the number of tickets
+    int ticket_count = 0;
+    for (int i = 0; i < tickets->count; i++) {
+        if (tickets->tickets[i].customer_id == current_user_id) {
+            ticket_count++;
+        }
+    }
+
+    // Error no transactions have been made.
+    if (ticket_count == 0) {
+        printf("\nBan chua mua ve ma . Hay dat ve nao!\n");
+        
+        // Clean up memory
+        if (tickets->tickets) free(tickets->tickets);
+        free(tickets);
+        if (screenings->screenings) free(screenings->screenings);
+        free(screenings);
+        return;
+    }
+
+    // Ticket purchase history table
+    printf("\n+========================================================================================================+\n");
+    printf("|                                       LICH SU MUA VE CUA BAN                                           |\n");
+    printf("+---------+---------------------------+------------------+------+-------+------------+-------------------+\n");
+    printf("| %-7s | %-25s | %-16s | %-4s | %-5s | %-10s | %-17s |\n",
+           "ID Ve", "Ten Phim", "Gio chieu", "Ghe", "Phong", "Gia Ve", "Trang thai");
+    printf("+---------+---------------------------+------------------+------+-------+------------+-------------------+\n");
+
+    for (int i = 0; i < tickets->count; i++) {
+        if (tickets->tickets[i].customer_id == current_user_id) {
+            int s_id = tickets->tickets[i].screening_id;
+            
+            // Find showtime information
+            Screening *s = NULL;
+            for (int j = 0; j < screenings->count; j++) {
+                if (screenings->screenings[j].screening_id == s_id) {
+                    s = &screenings->screenings[j];
+                    break;
+                }
+            }
+
+            if (s != NULL) {
+                // Lấy tên phim
+                char title[100];
+                get_movie_title(s->movie_id, title, sizeof(title));
+
+                // projection time format
+                time_t t = (time_t)s->start_time;
+                struct tm *tm_info = localtime(&t);
+                char time_str[20];
+                strftime(time_str, sizeof(time_str), "%d/%m/%Y %H:%M", tm_info);
+
+                // calculate projection status
+                time_t now = time(NULL);
+                char status[20];
+                if (t <= now) strcpy(status, "Da chieu");
+                else strcpy(status, "Chua chieu");
+
+                // Recalculate ticket prices
+                float est_price = s->price * ((tickets->tickets[i].seat_code[0] == 'E') ? 2 : 1);
+
+                printf("| %-7d | %-25.25s | %-16s | %-4s | %-5d | %10.0f | %-17s |\n",
+                       tickets->tickets[i].ticket_id, 
+                       title, 
+                       time_str, 
+                       tickets->tickets[i].seat_code, 
+                       s->room_number, 
+                       est_price, 
+                       status);
+            }
+        }
+    }
+    printf("+---------+---------------------------+------------------+------+-------+------------+-------------------+\n");
+    printf("| Tong so ve da mua: %-83d |\n", ticket_count);
+    printf("+========================================================================================================+\n\n");
+
+    // Clean up memory
+    if (tickets->tickets) free(tickets->tickets);
+    free(tickets);
+    if (screenings->screenings) free(screenings->screenings);
+    free(screenings);
 }
