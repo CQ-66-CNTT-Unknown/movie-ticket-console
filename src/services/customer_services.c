@@ -299,10 +299,10 @@ void book_ticket(int screening_id, char seat_code) {
         break;
     }
 
-    // 4. CHỌN DỊCH VỤ ĐI KÈM
+    // Choose additional services
     float service_fee = get_services_fee();
 
-    // 5. TÍNH TOÁN TỔNG TIỀN VÀ XÁC NHẬN
+    // Calculate the price and confirm the ticket purchase
     int seat_multiplier = (actual_seat_code[0] == 'E') ? 2 : 1; 
     
     float base_price = selected_screening->price;
@@ -402,7 +402,7 @@ static int display_user_tickets(int user_id) {
                 time_t now = time(NULL);
                 char status[20];
                 if (t <= now) strcpy(status, "Da chieu");
-                else strcpy(status, "Chua chieu (Hop le)");
+                else strcpy(status, "Chua chieu");
 
                 printf("| %-9d | %-25.25s | %-16s | %-6s | %-16s |\n",
                        tickets->tickets[i].ticket_id, title, time_str, tickets->tickets[i].seat_code, status);
