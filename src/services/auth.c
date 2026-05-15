@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 #include <string.h>
-
+#include <stdlib.h>
 User login() {
     User invalid_user = {-1, "", 0};
     char username[50];
