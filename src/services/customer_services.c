@@ -159,6 +159,21 @@ printf("\n--- XÁC NHẬN THÔNG TIN ĐẶT VÉ ---\n");
         free(screenings);
         return;
     }
+//Create a new ticket ID and save the information to a file
+    int new_ticket_id = generate_new_ticket_id();
+
+    FILE *ticket_file = fopen(TICKET_SOURCE_PATH, "a");
+    if (ticket_file == NULL) {
+        printf("Lỗi hệ thống: Không thể ghi vé vào tệp dữ liệu.\n");
+        free(screenings->screenings);
+        free(screenings);
+        return;
+    }
+    fprintf(ticket_file, "%d,%d,%d,%s\n", new_ticket_id, current_user_id, actual_screening_id, actual_seat_code);
+    fclose(ticket_file);
+    printf("\n Mua vé thành công! ID vé của bạn là: %d\n", new_ticket_id);
+    free(screenings->screenings);
+    free(screenings);
 
 }
 void cancel_ticket(int ticket_id) {
