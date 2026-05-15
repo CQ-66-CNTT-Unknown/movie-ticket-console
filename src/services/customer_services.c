@@ -416,8 +416,100 @@ static int display_user_tickets(int user_id) {
 
     return count;
 }
-void cancel_ticket(int ticket_id) {
-    printf("Chuc nang huy ve dang phat trien.\n");
+// Core function: Cancel a ticket
+void cancel_ticket(int current_user_id) {
+    // 1. Display user's purchased tickets
+    int count = display_user_tickets(current_user_id);
+    if (count == 0) {
+        printf("\nBan chua mua ve nao hoac khong co du lieu.\n");
+        return;
+    }
+
+    // 2. Ask for Ticket ID
+    int target_ticket_id;
+    printf("\nNhap ID ve ban muon huy (0 de thoat): ");
+    if (scanf("%d", &target_ticket_id) != 1) {
+        while (getchar() != '\n');
+        printf("Loi: Vui long nhap so hop le!\n");
+        return;
+    }
+    while (getchar() != '\n');
+
+    if (target_ticket_id == 0) return;
+
+    // Load ticket data
+    TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
+    if (tickets == NULL) return;
+
+    Ticket *target_ticket = NULL;
+    for (int i = 0; i < tickets->count; i++) {
+        if (tickets->tickets[i].ticket_id == target_ticket_id) {
+            target_ticket = &tickets->tickets[i];
+            break;
+        }
+    }
+
+    // Ticket ID not found
+    if (target_ticket == NULL) {
+        printf("Loi: Khong tim thay ve voi ID da cung cap.\n");
+        free(tickets->tickets); free(tickets);
+        return;
+    }
+
+    // Ticket doesn't belong to current user
+    if (target_ticket->customer_id != current_user_id) {
+        printf("Loi: Ban khong co quyen huy ve nay.\n");
+        free(tickets->tickets); free(tickets);
+        return;
+    }
+
+    // Load screening data to check time
+    ScreeningArray *screenings = get_all_screenings(SCREENING_SOURCE_PATH);
+    Screening *target_screening = NULL;
+    if (screenings != NULL) {
+        for (int i = 0; i < screenings->count; i++) {
+            if (screenings->screenings[i].screening_id == target_ticket->screening_id) {
+                target_screening = &screenings->screenings[i];
+                break;
+            }
+        }
+    }
+
+    // Screening already started or ended
+    if (target_screening != NULL) {
+        time_t now = time(NULL);
+        if ((time_t)target_screening->start_time <= now) {
+            printf("Loi: Khong the huy ve cua suat chieu da bat dau hoac ket thuc.\n");
+            free(tickets->tickets); free(tickets);
+            free(screenings->screenings); free(screenings);
+            return;
+        }
+    }
+
+    // Display confirmation box
+    char title[100] = "Unknown";
+    if (target_screening != NULL) {
+        get_movie_title(target_screening->movie_id, title, sizeof(title));
+    }
+
+    printf("\n+================================================+\n");
+    printf("|                XAC NHAN HUY VE                 |\n");
+    printf("+================================================+\n");
+    printf("| ID Ve        : %-31d |\n", target_ticket->ticket_id);
+    printf("| Phim         : %-31.31s |\n", title);
+    printf("| Ma ghe       : %-31s |\n", target_ticket->seat_code);
+    printf("+================================================+\n\n");
+
+    // Confirm and execute deletion
+    if (is_decision_yes("Ban co chac chan muon huy ve nay khong")) {
+        delete_ticket_by_id(target_ticket->ticket_id, TICKET_SOURCE_PATH);
+        printf("\n[THONG BAO] Huy ve thanh cong! Ghe ngoi da duoc giai phong.\n");
+    } else {
+        printf("\n[THONG BAO] Da huy qua trinh xoa ve.\n");
+    }
+
+    free(tickets->tickets); free(tickets);
+    if (screenings) { free(screenings->screenings); free(screenings); }
 }
 
 void view_purchase_history() {
