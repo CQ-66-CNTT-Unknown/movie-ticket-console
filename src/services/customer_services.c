@@ -95,7 +95,7 @@ static void display_seat_map(int screening_id) {
             if (seats[i][j] == 'X')
                 printf("|[XXX]");  // reserved seats
             else {
-                if (i == 4) // Hàng E - Ghế đôi
+                if (i == 4) // Row E - Double Seats
                     printf("|[< >]"); 
                 else
                     printf("|[   ]");  // empty seats
@@ -112,7 +112,7 @@ static void display_seat_map(int screening_id) {
     printf("===================================================\n");
 }
 
-// Chức năng mới: Bảng chọn đối tượng khách hàng
+// Customer selection table
 static float get_customer_discount(char* customer_type_str) {
     int choice;
     while(true) {
@@ -146,7 +146,7 @@ static float get_customer_discount(char* customer_type_str) {
     }
 }
 
-// Chức năng mới: Bảng chọn dịch vụ đi kèm
+// Optional services selection table
 static float get_services_fee() {
     int choice;
     float total_service = 0;
@@ -217,7 +217,7 @@ void book_ticket(int screening_id, char seat_code) {
         return;
     }
 
-    // 1. CHỌN SUẤT CHIẾU
+    // 1. Select screening time
     display_screenings(screenings);
 
     while (true) {
@@ -250,11 +250,11 @@ void book_ticket(int screening_id, char seat_code) {
             break;
     }
 
-    // 2. CHỌN ĐỐI TƯỢNG KHÁCH HÀNG
+    // select target customers
     char customer_type_str[50];
     float discount_rate = get_customer_discount(customer_type_str);
 
-    // 3. CHỌN GHẾ NGỒI
+    // choose a seat
     display_seat_map(actual_screening_id);
 
     while (true) {
