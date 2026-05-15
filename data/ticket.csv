@@ -5,3 +5,4 @@ ticket_id,screening_id,customer_id,seat_code
 4,2,15,"B2"
 5,3,2,"C10"
 6,4,3,"F1"7,4,1,A3
+7,4,1,A3

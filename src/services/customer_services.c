@@ -13,7 +13,7 @@
 #include <stdbool.h>
 #include <time.h>
 
-// tìm tên phim theo movie_id
+// Search for movie title by movie_id
 static void get_movie_title(int movie_id, char *out_title, int out_size) {
     MovieArray *movies = get_all_movies(MOVIE_SOURCE_PATH);
     strncpy(out_title, "Unknown", out_size - 1);
@@ -29,7 +29,7 @@ static void get_movie_title(int movie_id, char *out_title, int out_size) {
     free(movies);
 }
 
-// hiển thị danh sách suất chiếu
+// Display the list of showtimes
 static void display_screenings(ScreeningArray *screenings) {
     printf("\n+------+----------------------------+---------------------+----------+------+\n");
     printf("| %-4s | %-26s | %-19s | %-8s | %-4s |\n",
@@ -39,35 +39,31 @@ static void display_screenings(ScreeningArray *screenings) {
     for (int i = 0; i < screenings->count; i++) {
         Screening *s = &screenings->screenings[i];
 
-        // Format thời gian từ Unix timestamp
+        // Format time using Unix timestamp
         time_t t = (time_t)s->start_time;
         struct tm *tm_info = localtime(&t);
         char time_str[20];
         strftime(time_str, sizeof(time_str), "%d/%m/%Y %H:%M", tm_info);
 
-        // Lấy tên phim
+        // Get the movie name
         char title[100];
         get_movie_title(s->movie_id, title, sizeof(title));
-        // Cắt tên nếu quá dài
-        if (strlen(title) > 26) title[26] = '\0';
-
         printf("| %-4d | %-26s | %-19s | %8.0f | %-4d |\n",
                s->screening_id, title, time_str, s->price, s->room_number);
     }
     printf("+------+----------------------------+---------------------+----------+------+\n");
 }
 
-// hiển thị sơ đồ ghế dạng ô vuông 
+// Display seating chart
 static void display_seat_map(int screening_id) {
     TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
     char seats[5][5];
 
-    // Khởi tạo tất cả ghế trống
     for (int i = 0; i < 5; i++)
         for (int j = 0; j < 5; j++)
             seats[i][j] = 'O';
 
-    // Đánh dấu ghế đã đặt
+    // Mark X as reserved seat
     if (tickets != NULL) {
         for (int i = 0; i < tickets->count; i++) {
             if (tickets->tickets[i].screening_id == screening_id) {
@@ -85,30 +81,26 @@ static void display_seat_map(int screening_id) {
     printf("\n========= SO DO GHE NGOI (Suat chieu %d) =========\n", screening_id);
     printf("                  [ MAN HINH ]\n\n");
 
-    // Header số cột
     printf("      ");
     for (int j = 1; j <= 5; j++) printf("  %d   ", j);
     printf("\n");
 
-    // In từng hàng ghế dạng ô vuông
+    // I
     for (int i = 0; i < 5; i++) {
-        // Dòng trên của ô
         printf("      ");
         for (int j = 0; j < 5; j++) printf("+-----");
         printf("+\n");
 
-        // Dòng giữa — hiển thị trạng thái ghế
         printf("  %c   ", 'A' + i);
         for (int j = 0; j < 5; j++) {
             if (seats[i][j] == 'X')
-                printf("|[XXX]");  // ghế đã đặt
+                printf("|[XXX]");  // reserved seats
             else
-                printf("|[   ]");  // ghế trống
+                printf("|[   ]");  // empty seats
         }
         printf("|\n");
     }
 
-    // Dòng đáy cuối cùng
     printf("      ");
     for (int j = 0; j < 5; j++) printf("+-----");
     printf("+\n");
@@ -117,7 +109,7 @@ static void display_seat_map(int screening_id) {
     printf("===================================================\n");
 }
 
-// tạo ticket_id mới
+// create a new ticket_id
 static int generate_new_ticket_id() {
     TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
     int max_id = 0;
@@ -132,7 +124,7 @@ static int generate_new_ticket_id() {
     return max_id + 1;
 }
 
-//Mua vé
+// the book ticket
 void book_ticket(int screening_id, char seat_code) {
     int actual_screening_id;
     char actual_seat_code[10];
@@ -147,7 +139,7 @@ void book_ticket(int screening_id, char seat_code) {
         return;
     }
 
-    // Hiển thị danh sách suất chiếu trước khi hỏi ID
+    // Display the list of showtimes before asking for the ID
     display_screenings(screenings);
 
     while (true) {
@@ -180,7 +172,7 @@ void book_ticket(int screening_id, char seat_code) {
             break;
     }
 
-    // Hiển thị sơ đồ ghế dạng ô vuông
+    // Display the seating chart in a grid format
     display_seat_map(actual_screening_id);
 
     while (true) {
@@ -203,7 +195,7 @@ void book_ticket(int screening_id, char seat_code) {
             continue;
         }
 
-        // Kiểm tra ghế đã được đặt chưa
+        // Check if the seats have been reserved
         bool seat_taken = false;
         TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
         if (tickets != NULL) {
@@ -226,7 +218,7 @@ void book_ticket(int screening_id, char seat_code) {
         break;
     }
 
-    // Xác nhận thông tin
+    // Confirm information
     char title[100];
     get_movie_title(selected_screening->movie_id, title, sizeof(title));
 
@@ -244,7 +236,7 @@ void book_ticket(int screening_id, char seat_code) {
         return;
     }
 
-    // Lưu vé
+    // Save tickets
     int new_ticket_id = generate_new_ticket_id();
     FILE *ticket_file = fopen(TICKET_SOURCE_PATH, "a");
     if (ticket_file == NULL) {

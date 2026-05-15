@@ -9,7 +9,6 @@
 int main() {
     printf("Welcome to our cinema ticket booking system!\n");
 
-    // Tạm mock user CUSTOMER để test
     User user = {1, "TestUser", CUSTOMER};
 
     int choice;
