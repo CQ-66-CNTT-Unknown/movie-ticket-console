@@ -9,9 +9,9 @@ void book_ticket(int screening_id, char seat_code);
 
 /**
  * @brief Cancel a booked ticket
- * @param ticket_id The ID of the ticket to cancel
+ * @param current_user_id The ID of the user requesting to cancel
  */
-void cancel_ticket(int ticket_id);
+void cancel_ticket(int current_user_id); 
 
 /**
  * @brief View purchase history

@@ -357,7 +357,65 @@ void book_ticket(int screening_id, char seat_code) {
     free(screenings->screenings);
     free(screenings);
 }
+// Display tickets owned by the current user
+static int display_user_tickets(int user_id) {
+    TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
+    ScreeningArray *screenings = get_all_screenings(SCREENING_SOURCE_PATH);
 
+    if (tickets == NULL || screenings == NULL) {
+        if (tickets) { free(tickets->tickets); free(tickets); }
+        if (screenings) { free(screenings->screenings); free(screenings); }
+        return 0;
+    }
+
+    int count = 0;
+    printf("\n+======================================================================================+\n");
+    printf("|                              DANH SACH VE CUA BAN                                    |\n");
+    printf("+-----------+---------------------------+------------------+--------+------------------+\n");
+    printf("| %-9s | %-25s | %-16s | %-6s | %-16s |\n", "ID Ve", "Phim", "Gio chieu", "Ghe", "Trang thai");
+    printf("+-----------+---------------------------+------------------+--------+------------------+\n");
+
+    for (int i = 0; i < tickets->count; i++) {
+        if (tickets->tickets[i].customer_id == user_id) {
+            count++;
+            int s_id = tickets->tickets[i].screening_id;
+            
+            // Find screening details
+            Screening *s = NULL;
+            for (int j = 0; j < screenings->count; j++) {
+                if (screenings->screenings[j].screening_id == s_id) {
+                    s = &screenings->screenings[j];
+                    break;
+                }
+            }
+
+            if (s != NULL) {
+                char title[100];
+                get_movie_title(s->movie_id, title, sizeof(title));
+
+                time_t t = (time_t)s->start_time;
+                struct tm *tm_info = localtime(&t);
+                char time_str[20];
+                strftime(time_str, sizeof(time_str), "%d/%m %H:%M", tm_info);
+
+                // Check if screening has already happened
+                time_t now = time(NULL);
+                char status[20];
+                if (t <= now) strcpy(status, "Da chieu");
+                else strcpy(status, "Chua chieu (Hop le)");
+
+                printf("| %-9d | %-25.25s | %-16s | %-6s | %-16s |\n",
+                       tickets->tickets[i].ticket_id, title, time_str, tickets->tickets[i].seat_code, status);
+            }
+        }
+    }
+    printf("+======================================================================================+\n");
+
+    free(tickets->tickets); free(tickets);
+    free(screenings->screenings); free(screenings);
+
+    return count;
+}
 void cancel_ticket(int ticket_id) {
     printf("Chuc nang huy ve dang phat trien.\n");
 }
