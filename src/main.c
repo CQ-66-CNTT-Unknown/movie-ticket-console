@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include "../include/services/auth.h"
 #include "../include/utils/menu.h"
+#include "../include/services/customer_services.h" 
 
 int main() {
     printf("Welcome to our cinema ticket booking system!\n");
@@ -12,6 +13,5 @@ int main() {
     show_actions_menu(user.role);
     
     // Delay 5 seconds to show the menu
-    sleep(5);
-    return 0;
+    
 }
