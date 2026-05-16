@@ -11,6 +11,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * @brief Prints the details of a movie to the console
+ * @param movie Pointer to the Movie struct whose details are to be printed
+ */
+static void print_movie_details(const Movie *movie) {
+    printf("Movie Details:\n");
+    printf("ID: %d\n", movie->movie_id);
+    printf("Title: %s\n", movie->title);
+    printf("Duration: %d minutes\n", movie->duration);
+}
+
 void display_all_movies() {
     MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
 
@@ -291,17 +302,6 @@ void edit_movie() {
 
     free(movie_array->movies);
     free(movie_array);
-}
-
-/**
- * @brief Prints the details of a movie to the console
- * @param movie Pointer to the Movie struct whose details are to be printed
- */
-static void print_movie_details(const Movie *movie) {
-    printf("Movie Details:\n");
-    printf("ID: %d\n", movie->movie_id);
-    printf("Title: %s\n", movie->title);
-    printf("Duration: %d minutes\n", movie->duration);
 }
 
 void delete_movie() {
