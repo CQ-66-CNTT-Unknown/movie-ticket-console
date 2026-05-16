@@ -85,7 +85,6 @@ static void display_seat_map(int screening_id) {
     for (int j = 1; j <= 5; j++) printf("  %d   ", j);
     printf("\n");
 
-    // I
     for (int i = 0; i < 5; i++) {
         printf("      ");
         for (int j = 0; j < 5; j++) printf("+-----");
@@ -95,8 +94,12 @@ static void display_seat_map(int screening_id) {
         for (int j = 0; j < 5; j++) {
             if (seats[i][j] == 'X')
                 printf("|[XXX]");  // reserved seats
-            else
-                printf("|[   ]");  // empty seats
+            else {
+                if (i == 4) // Hàng E - Ghế đôi
+                    printf("|[< >]"); 
+                else
+                    printf("|[   ]");  // empty seats
+            }
         }
         printf("|\n");
     }
@@ -105,8 +108,83 @@ static void display_seat_map(int screening_id) {
     for (int j = 0; j < 5; j++) printf("+-----");
     printf("+\n");
 
-    printf("\n  [   ] = Trong      [XXX] = Da dat\n");
+    printf("\n  [   ] = Trong    [XXX] = Da dat    [< >] = Ghe doi (Hang E - Gia x2)\n");
     printf("===================================================\n");
+}
+
+// Chức năng mới: Bảng chọn đối tượng khách hàng
+static float get_customer_discount(char* customer_type_str) {
+    int choice;
+    while(true) {
+        printf("\n+================================================+\n");
+        printf("|             CHON DOI TUONG KHACH HANG          |\n");
+        printf("+================================================+\n");
+        printf("| 1. Hoc sinh - Sinh vien (Giam 10%% gia ve)      |\n");
+        printf("| 2. Nguoi lon (Giu nguyen gia ve)               |\n");
+        printf("| 3. Nguoi lon tuoi (Giam 8%% gia ve)             |\n");
+        printf("+================================================+\n");
+        printf("Nhap lua chon cua ban (1-3): ");
+        if (scanf("%d", &choice) != 1) {
+            while(getchar() != '\n');
+            printf("Lua chon khong hop le! Vui long nhap so.\n");
+            continue;
+        }
+        while(getchar() != '\n');
+
+        if (choice == 1) {
+            strcpy(customer_type_str, "Hoc sinh - Sinh vien (-10%)");
+            return 0.90f;
+        } else if (choice == 2) {
+            strcpy(customer_type_str, "Nguoi lon (Gia goc)");
+            return 1.0f;
+        } else if (choice == 3) {
+            strcpy(customer_type_str, "Nguoi lon tuoi (-8%)");
+            return 0.92f;
+        } else {
+            printf("Vui long chon tu 1 den 3!\n");
+        }
+    }
+}
+
+// Chức năng mới: Bảng chọn dịch vụ đi kèm
+static float get_services_fee() {
+    int choice;
+    float total_service = 0;
+    while(true) {
+        printf("\n+================================================+\n");
+        printf("|                 DICH VU DI KEM                 |\n");
+        printf("+================================================+\n");
+        printf("| 1. Nuoc ngot (+ 10,000 VND)                    |\n");
+        printf("| 2. Mi tron   (+ 25,000 VND)                    |\n");
+        printf("| 3. Bap rang  (+ 30,000 VND)                    |\n");
+        printf("| 0. Khong chon them / Xong (Bo qua)             |\n");
+        printf("+================================================+\n");
+        printf("Tam tinh tien dich vu: %.0f VND\n", total_service);
+        printf("Nhap lua chon cua ban (0-3): ");
+        
+        if (scanf("%d", &choice) != 1) {
+            while(getchar() != '\n');
+            printf("Lua chon khong hop le!\n");
+            continue;
+        }
+        while(getchar() != '\n');
+
+        if (choice == 0) {
+            break;
+        } else if (choice == 1) {
+            total_service += 10000;
+            printf("-> Da them 1 Nuoc ngot vao gio hang.\n");
+        } else if (choice == 2) {
+            total_service += 25000;
+            printf("-> Da them 1 Mi tron vao gio hang.\n");
+        } else if (choice == 3) {
+            total_service += 30000;
+            printf("-> Da them 1 Bap rang vao gio hang.\n");
+        } else {
+            printf("Vui long chon tu 0 den 3!\n");
+        }
+    }
+    return total_service;
 }
 
 // create a new ticket_id
@@ -139,7 +217,7 @@ void book_ticket(int screening_id, char seat_code) {
         return;
     }
 
-    // Display the list of showtimes before asking for the ID
+    // 1. CHỌN SUẤT CHIẾU
     display_screenings(screenings);
 
     while (true) {
@@ -172,11 +250,15 @@ void book_ticket(int screening_id, char seat_code) {
             break;
     }
 
-    // Display the seating chart in a grid format
+    // 2. CHỌN ĐỐI TƯỢNG KHÁCH HÀNG
+    char customer_type_str[50];
+    float discount_rate = get_customer_discount(customer_type_str);
+
+    // 3. CHỌN GHẾ NGỒI
     display_seat_map(actual_screening_id);
 
     while (true) {
-        printf("Nhap ma ghe (vi du: A1, B3) hoac Q de thoat: ");
+        printf("Nhap ma ghe (vi du: A1, E3) hoac Q de thoat: ");
         scanf("%s", actual_seat_code);
         while (getchar() != '\n');
 
@@ -214,20 +296,41 @@ void book_ticket(int screening_id, char seat_code) {
             printf("Loi: Ghe %s da co nguoi dat. Vui long chon ghe khac.\n", actual_seat_code);
             continue;
         }
-
         break;
     }
 
-    // Confirm information
+    // 4. CHỌN DỊCH VỤ ĐI KÈM
+    float service_fee = get_services_fee();
+
+    // 5. TÍNH TOÁN TỔNG TIỀN VÀ XÁC NHẬN
+    int seat_multiplier = (actual_seat_code[0] == 'E') ? 2 : 1; 
+    
+    float base_price = selected_screening->price;
+    float discounted_price = base_price * discount_rate;
+    float seat_price = discounted_price * seat_multiplier;
+    float total_bill = seat_price + service_fee;
+
     char title[100];
     get_movie_title(selected_screening->movie_id, title, sizeof(title));
 
-    printf("\n--- XAC NHAN THONG TIN DAT VE ---\n");
-    printf("Phim        : %s\n", title);
-    printf("ID Suat chieu: %d\n", actual_screening_id);
-    printf("Ma ghe      : %s\n", actual_seat_code);
-    printf("Gia ve      : %.0f VND\n", selected_screening->price);
-    printf("---------------------------------\n");
+    printf("\n+================================================+\n");
+    printf("|             HOA DON THANH TOAN                 |\n");
+    printf("+================================================+\n");
+    printf("| Phim         : %-31s |\n", title);
+    printf("| ID Suat chieu: %-31d |\n", actual_screening_id);
+    printf("| Loai khach   : %-31s |\n", customer_type_str);
+    
+    if (seat_multiplier == 2) {
+        printf("| Ma ghe       : %-9s (Ghe doi VIP x2)       |\n", actual_seat_code);
+    } else {
+        printf("| Ma ghe       : %-31s |\n", actual_seat_code);
+    }
+    
+    printf("| Tien ghe     : %-27.0f VND |\n", seat_price);
+    printf("| Tien dich vu : %-27.0f VND |\n", service_fee);
+    printf("+------------------------------------------------+\n");
+    printf("| TONG CONG    : %-27.0f VND |\n", total_bill);
+    printf("+================================================+\n\n");
 
     if (!is_decision_yes("Xac nhan thanh toan va mua ve")) {
         printf("Da huy qua trinh mua ve.\n");
@@ -249,7 +352,7 @@ void book_ticket(int screening_id, char seat_code) {
             new_ticket_id, actual_screening_id, current_user_id, actual_seat_code);
     fclose(ticket_file);
 
-    printf("\nMua ve thanh cong! ID ve cua ban la: %d\n", new_ticket_id);
+    printf("\n[HOAN TAT] Mua ve thanh cong! ID ve cua ban la: %d\n", new_ticket_id);
 
     free(screenings->screenings);
     free(screenings);
