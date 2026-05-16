@@ -12,7 +12,7 @@ User* login() {
     char password[50];
 
     while (1) {
-        printf("\n===== LOGIN =====\n");
+        printf(RED"\n===== LOGIN =====\n" RESET);
         printf("Enter username: ");
         fgets(username, sizeof(username), stdin);
         username[strcspn(username, "\n")] = '\0';

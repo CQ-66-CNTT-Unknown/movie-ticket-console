@@ -32,8 +32,8 @@ static void get_movie_title(int movie_id, char *out_title, int out_size) {
 // Display the list of showtimes
 static void display_screenings(ScreeningArray *screenings) {
     printf("\n+------+----------------------------+---------------------+----------+------+\n");
-    printf("| %-4s | %-26s | %-19s | %-8s | %-4s |\n",
-           "ID", "Phim", "Gio chieu", "Gia ve", "Phong");
+    printf(YELLOW "| %-4s | %-26s | %-19s | %-8s | %-4s |\n",
+           "ID", "Phim", "Gio chieu", "Gia ve", "Phong" RESET);
     printf("+------+----------------------------+---------------------+----------+------+\n");
 
     for (int i = 0; i < screenings->count; i++) {
@@ -78,7 +78,7 @@ static void display_seat_map(int screening_id) {
         free(tickets);
     }
 
-    printf("\n========= SO DO GHE NGOI (Suat chieu %d) =========\n", screening_id);
+    printf(RED "\n========= SO DO GHE NGOI (Suat chieu %d) =========\n" RESET, screening_id);
     printf("                  [ MAN HINH ]\n\n");
 
     printf("      ");
