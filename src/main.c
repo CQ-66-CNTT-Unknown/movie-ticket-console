@@ -41,7 +41,7 @@ int main() {
                     show_seat_map();
                     break;
                 case 4:
-                    book_ticket(user->user_id, 0);
+                    book_ticket(user->user_id);
                     break;
                 case 5:
                     cancel_ticket(user->user_id);

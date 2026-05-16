@@ -5,7 +5,7 @@
  * @param screening_id The ID of the screening for which to book a ticket
  * @param seat_code The code of the seat to book
  */
-void book_ticket(int screening_id, char seat_code);
+void book_ticket(int user_id);
 
 /**
  * @brief Cancel a booked ticket
