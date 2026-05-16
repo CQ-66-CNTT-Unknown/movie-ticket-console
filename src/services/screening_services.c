@@ -7,8 +7,8 @@
 #include "../../include/repos/screening_repo.h"
 #include "../../include/repos/ticket_repo.h"
 #include "../../include/utils/csv_utils.h"
-#include "../../include/utils/input_utils.h"
 #include "../../include/utils/decision_utils.h"
+#include "../../include/utils/input_utils.h"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -95,9 +95,16 @@ void view_screenings() {
     free(movie_array);
 }
 
-void show_seat_map(int screening_id) {
+void show_seat_map() {
+    int screening_id = input_id("Enter screening ID to view seat map: ", 50);
+
+    while (screening_id == -1) {
+        printf("Invalid screening ID. Please enter a valid number.\n");
+        screening_id = input_id("Enter screening ID to view seat map: ", 50);
+    }
+
     TicketArray *ticket_array = get_all_tickets(TICKET_SOURCE_PATH);
-    
+
     if (ticket_array == NULL) {
         fprintf(stderr, "Failed to load ticket data.\n");
         return;
@@ -109,7 +116,7 @@ void show_seat_map(int screening_id) {
     // Define room layout: 10 rows (A-J), 10 seats per row (1-10)
     int rows = 10;
     int seats_per_row = 10;
-    
+
     // Create a seat matrix to track booked seats
     bool booked[rows][seats_per_row];
     memset(booked, false, sizeof(booked));
@@ -150,9 +157,16 @@ void show_seat_map(int screening_id) {
     free(ticket_array);
 }
 
-void create_screening(int movie_id) {
+void create_screening() {
+    int movie_id = input_id("Enter movie ID for the new screening: ", 50);
+
+    while (movie_id == -1) {
+        printf("Invalid movie ID. Please enter a valid number.\n");
+        movie_id = input_id("Enter movie ID for the new screening: ", 50);
+    }
+
     MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
-    
+
     if (movie_array == NULL) {
         fprintf(stderr, "Failed to load movie data.\n");
         return;
@@ -179,7 +193,7 @@ void create_screening(int movie_id) {
     // Get new screening ID (find max ID and add 1)
     ScreeningArray *screening_array = get_all_screenings(SCREENING_SOURCE_PATH);
     int new_screening_id = 1;
-    
+
     if (screening_array != NULL && screening_array->count > 0) {
         for (int i = 0; i < screening_array->count; i++) {
             if (screening_array->screenings[i].screening_id >= new_screening_id) {
@@ -197,15 +211,14 @@ void create_screening(int movie_id) {
     datetime_str[strcspn(datetime_str, "\n")] = '\0';
 
     struct tm time_struct = {0};
-    sscanf(datetime_str, "%d-%d-%d %d:%d", 
-           &time_struct.tm_year, &time_struct.tm_mon, &time_struct.tm_mday,
+    sscanf(datetime_str, "%d-%d-%d %d:%d", &time_struct.tm_year, &time_struct.tm_mon, &time_struct.tm_mday,
            &time_struct.tm_hour, &time_struct.tm_min);
-    
+
     time_struct.tm_year -= 1900; // tm_year is years since 1900
-    time_struct.tm_mon -= 1;     // tm_mon is 0-11
+    time_struct.tm_mon -= 1; // tm_mon is 0-11
 
     time_t start_time = mktime(&time_struct);
-    if (start_time == (time_t)-1) {
+    if (start_time == (time_t) -1) {
         fprintf(stderr, "Invalid date/time format.\n");
         free(movie_array->movies);
         free(movie_array);
@@ -266,7 +279,9 @@ static void print_screening_details(Screening *screening) {
     printf("Room Number: %d\n", screening->room_number);
 }
 
-void cancel_screening(int screening_id) {
+void cancel_screening() {
+    int screening_id = input_id("Enter the ID of the screening you want to cancel: ", 50);
+    
     if (screening_id == -1) {
         printf("The ID is invalid!\n");
         return;

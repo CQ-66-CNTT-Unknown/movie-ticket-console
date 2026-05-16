@@ -13,7 +13,7 @@
 
 void display_all_movies() {
     MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
-    
+
     if (movie_array == NULL) {
         fprintf(stderr, "Failed to load movie data.\n");
         return;
@@ -29,13 +29,12 @@ void display_all_movies() {
     printf("\n===== ALL MOVIES =====\n");
     printf("%-8s | %-40s | %-10s\n", "ID", "Title", "Duration");
     printf("-");
-    for (int i = 0; i < 60; i++) printf("-");
+    for (int i = 0; i < 60; i++)
+        printf("-");
     printf("\n");
 
     for (int i = 0; i < movie_array->count; i++) {
-        printf("%-8d | %-40s | %-10d minutes\n", 
-               movie_array->movies[i].movie_id,
-               movie_array->movies[i].title,
+        printf("%-8d | %-40s | %-10d minutes\n", movie_array->movies[i].movie_id, movie_array->movies[i].title,
                movie_array->movies[i].duration);
     }
 
@@ -43,7 +42,13 @@ void display_all_movies() {
     free(movie_array);
 }
 
-int compareFilm(char *haystack, char *needle) {
+/**
+ * @brief Checks whether the searched movie name exists within the movie name loaded from file.
+ * @param haystack Movie name loaded from file.
+ * @param needle Movie name entered by the user.
+ * @return 1 if found, 0 otherwise.
+ */
+static int compare_film(char *haystack, char *needle) {
     if (haystack == NULL || needle == NULL) {
         return 0;
     }
@@ -51,12 +56,12 @@ int compareFilm(char *haystack, char *needle) {
     // Convert both strings to lowercase for case-insensitive comparison
     char haystack_lower[MAX_MOVIE_NAME];
     char needle_lower[MAX_MOVIE_NAME];
-    
+
     for (int i = 0; haystack[i] != '\0'; i++) {
         haystack_lower[i] = tolower(haystack[i]);
     }
     haystack_lower[strlen(haystack)] = '\0';
-    
+
     for (int i = 0; needle[i] != '\0'; i++) {
         needle_lower[i] = tolower(needle[i]);
     }
@@ -69,12 +74,12 @@ int compareFilm(char *haystack, char *needle) {
     return 0; // Not found
 }
 
-Movie search_movie_by_name(Movie *a) {
+void search_movie_by_name() {
     MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
-    
+
     if (movie_array == NULL) {
         fprintf(stderr, "Failed to load movie data.\n");
-        return (Movie){-1, "", 0};
+        return;
     }
 
     printf("\n===== SEARCH MOVIE BY NAME =====\n");
@@ -88,7 +93,7 @@ Movie search_movie_by_name(Movie *a) {
     int result_count = 0;
 
     for (int i = 0; i < movie_array->count && result_count < 100; i++) {
-        if (compareFilm(movie_array->movies[i].title, movie_input)) {
+        if (compare_film(movie_array->movies[i].title, movie_input)) {
             results[result_count] = movie_array->movies[i];
             result_count++;
         }
@@ -98,38 +103,18 @@ Movie search_movie_by_name(Movie *a) {
         printf("\nNo matching movies found.\n");
         free(movie_array->movies);
         free(movie_array);
-        return (Movie){-1, "", 0};
+        return;
     }
 
     // Display results
     printf("\n%-5s | %-40s | %-10s\n", "No.", "Title", "Duration");
     printf("-");
-    for (int i = 0; i < 60; i++) printf("-");
+    for (int i = 0; i < 60; i++)
+        printf("-");
     printf("\n");
 
     for (int i = 0; i < result_count; i++) {
-        printf("%-5d | %-40s | %-10d minutes\n", 
-               i + 1, 
-               results[i].title,
-               results[i].duration);
-    }
-
-    // Get user choice
-    int choice = -1;
-    printf("\nEnter the corresponding number to select a movie (or 0 to cancel): ");
-    inputNumber(&choice);
-
-    if (choice >= 1 && choice <= result_count) {
-        *a = results[choice - 1];
-        printf("\nSelected: %s\n", a->title);
-        free(movie_array->movies);
-        free(movie_array);
-        return *a;
-    } else {
-        printf("\nOperation cancelled.\n");
-        free(movie_array->movies);
-        free(movie_array);
-        return (Movie){-1, "", 0};
+        printf("%-5d | %-40s | %-10d minutes\n", i + 1, results[i].title, results[i].duration);
     }
 }
 
@@ -137,7 +122,7 @@ void add_movie() {
     // TODO
 }
 
-void edit_movie(int movie_id) {
+void edit_movie() {
     // TODO
 }
 
@@ -152,9 +137,11 @@ static void print_movie_details(const Movie *movie) {
     printf("Duration: %d minutes\n", movie->duration);
 }
 
-void delete_movie(int movie_id) {
+void delete_movie() {
+    int movie_id = input_id("Enter the ID of the movie you want to delete: ", MAX_MOVIE_NAME);
+
     if (movie_id == -1) {
-        printf("The ID is invalid!\n");
+        printf("Invalid input for movie ID.\n");
         return;
     }
 

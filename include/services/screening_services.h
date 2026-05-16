@@ -13,18 +13,15 @@ Screening choose_screening(Screening *a);
 
 /**
  * @brief Show the seat map for a specific screening
- * @param screening_id The ID of the screening for which to show the seat map
  */
-void show_seat_map(int screening_id);
+void show_seat_map();
 
 /**
  * @brief Create a new screening
- * @param movie_id The ID of the movie for which the screening is to be created
  */
-void create_screening(int movie_id);
+void create_screening();
 
 /**
  * @brief Cancel an existing screening
- * @param screening_id The ID of the screening to cancel
  */
-void cancel_screening(int screening_id);
+void cancel_screening();
