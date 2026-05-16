@@ -26,28 +26,28 @@ int main() {
         if (user.role == CUSTOMER) {
             switch (choice) {
                 case 1:
-                    printf("Chức năng xem phim đang phát triển.\n");
+                    printf("chuc nang xem suat chieu\n");
                     break;
                 case 2:
-                    printf("Chức năng tìm kiếm đang phát triển.\n");
+                    printf("chuc nang tim kiem .\n");
                     break;
                 case 3:
-                    printf("Chức năng xem sơ đồ ghế đang phát triển.\n");
+                    printf("chuc nang xem so do ghe .\n");
                     break;
                 case 4:
-                    book_ticket(0, 0); // hàm tự hỏi input bên trong
+                    book_ticket(0, 0);
                     break;
                 case 5:
-                    cancel_ticket(0);
+                    cancel_ticket(user.user_id);
                     break;
                 case 6:
                     view_purchase_history();
                     break;
                 case 7:
-                    printf("Đã đăng xuất. Tạm biệt!\n");
+                    printf("Da dang xuat !!!!!\n");
                     return 0;
                 default:
-                    printf("Lựa chọn không hợp lệ! Vui lòng chọn 1-7.\n");
+                    printf("Lua chon khong hop le vui long chi chon 1-7.\n");
             }
         }
     }

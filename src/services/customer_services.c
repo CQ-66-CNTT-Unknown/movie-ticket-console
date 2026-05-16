@@ -95,7 +95,7 @@ static void display_seat_map(int screening_id) {
             if (seats[i][j] == 'X')
                 printf("|[XXX]");  // reserved seats
             else {
-                if (i == 4) // Hàng E - Ghế đôi
+                if (i == 4) // Row E - Double Seats
                     printf("|[< >]"); 
                 else
                     printf("|[   ]");  // empty seats
@@ -112,7 +112,7 @@ static void display_seat_map(int screening_id) {
     printf("===================================================\n");
 }
 
-// Chức năng mới: Bảng chọn đối tượng khách hàng
+// Customer selection table
 static float get_customer_discount(char* customer_type_str) {
     int choice;
     while(true) {
@@ -146,7 +146,7 @@ static float get_customer_discount(char* customer_type_str) {
     }
 }
 
-// Chức năng mới: Bảng chọn dịch vụ đi kèm
+// Optional services selection table
 static float get_services_fee() {
     int choice;
     float total_service = 0;
@@ -217,7 +217,7 @@ void book_ticket(int screening_id, char seat_code) {
         return;
     }
 
-    // 1. CHỌN SUẤT CHIẾU
+    // 1. Select screening time
     display_screenings(screenings);
 
     while (true) {
@@ -250,11 +250,11 @@ void book_ticket(int screening_id, char seat_code) {
             break;
     }
 
-    // 2. CHỌN ĐỐI TƯỢNG KHÁCH HÀNG
+    // select target customers
     char customer_type_str[50];
     float discount_rate = get_customer_discount(customer_type_str);
 
-    // 3. CHỌN GHẾ NGỒI
+    // choose a seat
     display_seat_map(actual_screening_id);
 
     while (true) {
@@ -299,10 +299,10 @@ void book_ticket(int screening_id, char seat_code) {
         break;
     }
 
-    // 4. CHỌN DỊCH VỤ ĐI KÈM
+    // Choose additional services
     float service_fee = get_services_fee();
 
-    // 5. TÍNH TOÁN TỔNG TIỀN VÀ XÁC NHẬN
+    // Calculate the price and confirm the ticket purchase
     int seat_multiplier = (actual_seat_code[0] == 'E') ? 2 : 1; 
     
     float base_price = selected_screening->price;
@@ -357,9 +357,159 @@ void book_ticket(int screening_id, char seat_code) {
     free(screenings->screenings);
     free(screenings);
 }
+// Display tickets owned by the current user
+static int display_user_tickets(int user_id) {
+    TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
+    ScreeningArray *screenings = get_all_screenings(SCREENING_SOURCE_PATH);
 
-void cancel_ticket(int ticket_id) {
-    printf("Chuc nang huy ve dang phat trien.\n");
+    if (tickets == NULL || screenings == NULL) {
+        if (tickets) { free(tickets->tickets); free(tickets); }
+        if (screenings) { free(screenings->screenings); free(screenings); }
+        return 0;
+    }
+
+    int count = 0;
+    printf("\n+======================================================================================+\n");
+    printf("|                              DANH SACH VE CUA BAN                                    |\n");
+    printf("+-----------+---------------------------+------------------+--------+------------------+\n");
+    printf("| %-9s | %-25s | %-16s | %-6s | %-16s |\n", "ID Ve", "Phim", "Gio chieu", "Ghe", "Trang thai");
+    printf("+-----------+---------------------------+------------------+--------+------------------+\n");
+
+    for (int i = 0; i < tickets->count; i++) {
+        if (tickets->tickets[i].customer_id == user_id) {
+            count++;
+            int s_id = tickets->tickets[i].screening_id;
+            
+            // Find screening details
+            Screening *s = NULL;
+            for (int j = 0; j < screenings->count; j++) {
+                if (screenings->screenings[j].screening_id == s_id) {
+                    s = &screenings->screenings[j];
+                    break;
+                }
+            }
+
+            if (s != NULL) {
+                char title[100];
+                get_movie_title(s->movie_id, title, sizeof(title));
+
+                time_t t = (time_t)s->start_time;
+                struct tm *tm_info = localtime(&t);
+                char time_str[20];
+                strftime(time_str, sizeof(time_str), "%d/%m %H:%M", tm_info);
+
+                // Check if screening has already happened
+                time_t now = time(NULL);
+                char status[20];
+                if (t <= now) strcpy(status, "Da chieu");
+                else strcpy(status, "Chua chieu");
+
+                printf("| %-9d | %-25.25s | %-16s | %-6s | %-16s |\n",
+                       tickets->tickets[i].ticket_id, title, time_str, tickets->tickets[i].seat_code, status);
+            }
+        }
+    }
+    printf("+======================================================================================+\n");
+
+    free(tickets->tickets); free(tickets);
+    free(screenings->screenings); free(screenings);
+
+    return count;
+}
+// Core function: Cancel a ticket
+void cancel_ticket(int current_user_id) {
+    // 1. Display user's purchased tickets
+    int count = display_user_tickets(current_user_id);
+    if (count == 0) {
+        printf("\nBan chua mua ve nao hoac khong co du lieu.\n");
+        return;
+    }
+
+    // 2. Ask for Ticket ID
+    int target_ticket_id;
+    printf("\nNhap ID ve ban muon huy (0 de thoat): ");
+    if (scanf("%d", &target_ticket_id) != 1) {
+        while (getchar() != '\n');
+        printf("Loi: Vui long nhap so hop le!\n");
+        return;
+    }
+    while (getchar() != '\n');
+
+    if (target_ticket_id == 0) return;
+
+    // Load ticket data
+    TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
+    if (tickets == NULL) return;
+
+    Ticket *target_ticket = NULL;
+    for (int i = 0; i < tickets->count; i++) {
+        if (tickets->tickets[i].ticket_id == target_ticket_id) {
+            target_ticket = &tickets->tickets[i];
+            break;
+        }
+    }
+
+    // Ticket ID not found
+    if (target_ticket == NULL) {
+        printf("Loi: Khong tim thay ve voi ID da cung cap.\n");
+        free(tickets->tickets); free(tickets);
+        return;
+    }
+
+    // Ticket doesn't belong to current user
+    if (target_ticket->customer_id != current_user_id) {
+        printf("Loi: Ban khong co quyen huy ve nay.\n");
+        free(tickets->tickets); free(tickets);
+        return;
+    }
+
+    // Load screening data to check time
+    ScreeningArray *screenings = get_all_screenings(SCREENING_SOURCE_PATH);
+    Screening *target_screening = NULL;
+    if (screenings != NULL) {
+        for (int i = 0; i < screenings->count; i++) {
+            if (screenings->screenings[i].screening_id == target_ticket->screening_id) {
+                target_screening = &screenings->screenings[i];
+                break;
+            }
+        }
+    }
+
+    // Screening already started or ended
+    if (target_screening != NULL) {
+        time_t now = time(NULL);
+        if ((time_t)target_screening->start_time <= now) {
+            printf("Loi: Khong the huy ve cua suat chieu da bat dau hoac ket thuc.\n");
+            free(tickets->tickets); free(tickets);
+            free(screenings->screenings); free(screenings);
+            return;
+        }
+    }
+
+    // Display confirmation box
+    char title[100] = "Unknown";
+    if (target_screening != NULL) {
+        get_movie_title(target_screening->movie_id, title, sizeof(title));
+    }
+
+    printf("\n+================================================+\n");
+    printf("|                XAC NHAN HUY VE                 |\n");
+    printf("+================================================+\n");
+    printf("| ID Ve        : %-31d |\n", target_ticket->ticket_id);
+    printf("| Phim         : %-31.31s |\n", title);
+    printf("| Ma ghe       : %-31s |\n", target_ticket->seat_code);
+    printf("+================================================+\n\n");
+
+    // Confirm and execute deletion
+    if (is_decision_yes("Ban co chac chan muon huy ve nay khong")) {
+        delete_ticket_by_id(target_ticket->ticket_id, TICKET_SOURCE_PATH);
+        printf("\n[THONG BAO] Huy ve thanh cong! Ghe ngoi da duoc giai phong.\n");
+    } else {
+        printf("\n[THONG BAO] Da huy qua trinh xoa ve.\n");
+    }
+
+    free(tickets->tickets); free(tickets);
+    if (screenings) { free(screenings->screenings); free(screenings); }
 }
 
 void view_purchase_history() {
