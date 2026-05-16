@@ -60,7 +60,8 @@ cd movie-ticket-console
 ```powershell
 ./build.ps1 -Clean
 ```
-
+ - Enable UTF-8 encoding for proper console display 
+  chcp 65001
 - Build and export the executable with CSV data into `dist/`
 ```powershell
 ./build.ps1 -Export
