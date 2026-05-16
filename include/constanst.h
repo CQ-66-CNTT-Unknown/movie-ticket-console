@@ -17,3 +17,9 @@
 #define TEMP_FILE_NAME "temp_file.csv"
 
 #define DIR_LENGTH 256
+
+#define COLOR_RED     0xFF0000
+#define COLOR_GREEN   0x00FF00
+#define COLOR_BLUE    0x0000FF
+#define COLOR_WHITE   0xFFFFFF
+#define COLOR_BLACK   0x000000
