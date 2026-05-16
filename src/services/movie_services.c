@@ -120,7 +120,7 @@ void search_movie_by_name() {
 
 void add_movie() {
     MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
-    
+
     if (movie_array == NULL) {
         fprintf(stderr, "Failed to load movie data.\n");
         return;
@@ -182,14 +182,16 @@ void add_movie() {
     free(movie_array);
 }
 
-void edit_movie(int movie_id) {
+void edit_movie() {
+    int movie_id = input_id("Enter the ID of the movie you want to edit: ", 50);
+
     if (movie_id == -1) {
         printf("The ID is invalid!\n");
         return;
     }
 
     MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
-    
+
     if (movie_array == NULL) {
         fprintf(stderr, "Failed to load movie data.\n");
         return;
@@ -221,7 +223,7 @@ void edit_movie(int movie_id) {
     printf("2. Duration\n");
     printf("0. Cancel\n");
     printf("Enter your choice: ");
-    
+
     int choice = -1;
     inputNumber(&choice);
 
@@ -248,8 +250,7 @@ void edit_movie(int movie_id) {
         strncpy(found_movie->title, new_title, sizeof(found_movie->title) - 1);
         found_movie->title[sizeof(found_movie->title) - 1] = '\0';
         printf("Title updated successfully!\n");
-    } 
-    else if (choice == 2) {
+    } else if (choice == 2) {
         int new_duration = input_id("Enter new duration (minutes): ", 50);
         if (new_duration <= 0) {
             printf("Duration must be greater than 0!\n");
@@ -259,8 +260,7 @@ void edit_movie(int movie_id) {
         }
         found_movie->duration = new_duration;
         printf("Duration updated successfully!\n");
-    } 
-    else {
+    } else {
         printf("Invalid choice!\n");
         free(movie_array->movies);
         free(movie_array);
@@ -281,9 +281,7 @@ void edit_movie(int movie_id) {
 
     // Write all movies
     for (int i = 0; i < movie_array->count; i++) {
-        fprintf(movie_file, "%d,%s,%d\n", 
-                movie_array->movies[i].movie_id,
-                movie_array->movies[i].title,
+        fprintf(movie_file, "%d,%s,%d\n", movie_array->movies[i].movie_id, movie_array->movies[i].title,
                 movie_array->movies[i].duration);
     }
 
@@ -306,7 +304,7 @@ static void print_movie_details(const Movie *movie) {
     printf("Duration: %d minutes\n", movie->duration);
 }
 
-void delete_movie(int movie_id) {
+void delete_movie() {
     int movie_id = input_id("Enter the ID of the movie you want to delete: ", MAX_MOVIE_NAME);
 
     if (movie_id == -1) {
