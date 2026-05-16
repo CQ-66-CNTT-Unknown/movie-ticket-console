@@ -202,10 +202,9 @@ static int generate_new_ticket_id() {
     return max_id + 1;
 }
 
-void book_ticket(int screening_id, char seat_code) {
+void book_ticket(int user_id) {
     int actual_screening_id;
     char actual_seat_code[10];
-    int current_user_id = 1;
 
     Screening *selected_screening = NULL;
     ScreeningArray *screenings = get_all_screenings(SCREENING_SOURCE_PATH);
@@ -342,7 +341,7 @@ void book_ticket(int screening_id, char seat_code) {
         return;
     }
     fprintf(ticket_file, "%d,%d,%d,%s\n",
-            new_ticket_id, actual_screening_id, current_user_id, actual_seat_code);
+            new_ticket_id, actual_screening_id,user_id, actual_seat_code);
     fclose(ticket_file);
 
     printf("\n[HOAN TAT] Mua ve thanh cong! ID ve cua ban la: %d\n", new_ticket_id);
