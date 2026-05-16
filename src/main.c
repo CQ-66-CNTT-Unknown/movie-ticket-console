@@ -77,10 +77,10 @@ int main() {
                     create_screening();
                     break;
                 case 7:
-                    printf("Tinh nang nay dang duoc phat trien, vui long quay lai sau!\n");
+                    cancel_screening();
                     break;
                 case 8:
-                    cancel_screening();
+                    show_revenue_report();
                     break;
                 case 0:
                     printf("Da dang xuat !!!!!\n");
