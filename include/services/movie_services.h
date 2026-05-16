@@ -1,5 +1,5 @@
 #pragma once
-
+#include "../models/movie.h"
 /**
  * @brief Display all available movies
  *

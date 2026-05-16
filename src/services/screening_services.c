@@ -237,7 +237,7 @@ void create_screening(int movie_id) {
         return;
     }
 
-    fprintf(screening_file, "%d,%d,%ld,%.0f,%d\n", new_screening_id, movie_id, start_time, price, room_number);
+    fprintf(screening_file, "%d,%d,%lld,%.0f,%d\n", new_screening_id, movie_id, start_time, price, room_number);
     fclose(screening_file);
 
     printf("\nScreening created successfully!\n");

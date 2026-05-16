@@ -1,5 +1,5 @@
 #pragma once
-
+#include "../models/screening.h"
 /**
  * @brief View all screenings
  */
