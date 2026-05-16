@@ -119,11 +119,180 @@ void search_movie_by_name() {
 }
 
 void add_movie() {
-    // TODO
+    MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
+    
+    if (movie_array == NULL) {
+        fprintf(stderr, "Failed to load movie data.\n");
+        return;
+    }
+
+    printf("\n===== ADD NEW MOVIE =====\n");
+
+    // Get new movie ID (find max ID and add 1)
+    int new_movie_id = 1;
+    if (movie_array->count > 0) {
+        for (int i = 0; i < movie_array->count; i++) {
+            if (movie_array->movies[i].movie_id >= new_movie_id) {
+                new_movie_id = movie_array->movies[i].movie_id + 1;
+            }
+        }
+    }
+
+    // Get movie title from user
+    char title[100];
+    printf("Enter movie title: ");
+    fgets(title, sizeof(title), stdin);
+    deleteEnter(title);
+
+    // Validate title is not empty
+    if (strlen(title) == 0) {
+        printf("Movie title cannot be empty!\n");
+        free(movie_array->movies);
+        free(movie_array);
+        return;
+    }
+
+    // Get movie duration from user
+    int duration = input_id("Enter movie duration (minutes): ", 50);
+    if (duration <= 0) {
+        printf("Movie duration must be greater than 0!\n");
+        free(movie_array->movies);
+        free(movie_array);
+        return;
+    }
+
+    // Write to CSV file
+    FILE *movie_file = fopen(MOVIE_SOURCE_PATH, "a");
+    if (movie_file == NULL) {
+        fprintf(stderr, "Failed to open movie file for writing.\n");
+        free(movie_array->movies);
+        free(movie_array);
+        return;
+    }
+
+    fprintf(movie_file, "%d,%s,%d\n", new_movie_id, title, duration);
+    fclose(movie_file);
+
+    printf("\nMovie added successfully!\n");
+    printf("Movie ID: %d\n", new_movie_id);
+    printf("Title: %s\n", title);
+    printf("Duration: %d minutes\n", duration);
+
+    free(movie_array->movies);
+    free(movie_array);
 }
 
-void edit_movie() {
-    // TODO
+void edit_movie(int movie_id) {
+    if (movie_id == -1) {
+        printf("The ID is invalid!\n");
+        return;
+    }
+
+    MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
+    
+    if (movie_array == NULL) {
+        fprintf(stderr, "Failed to load movie data.\n");
+        return;
+    }
+
+    // Find the movie
+    Movie *found_movie = NULL;
+    int movie_index = -1;
+    for (int i = 0; i < movie_array->count; i++) {
+        if (movie_array->movies[i].movie_id == movie_id) {
+            found_movie = &movie_array->movies[i];
+            movie_index = i;
+            break;
+        }
+    }
+
+    if (found_movie == NULL) {
+        printf("Movie with ID %d not found!\n", movie_id);
+        free(movie_array->movies);
+        free(movie_array);
+        return;
+    }
+
+    printf("\n===== EDIT MOVIE =====\n");
+    print_movie_details(found_movie);
+
+    printf("\nWhat do you want to edit?\n");
+    printf("1. Title\n");
+    printf("2. Duration\n");
+    printf("0. Cancel\n");
+    printf("Enter your choice: ");
+    
+    int choice = -1;
+    inputNumber(&choice);
+
+    if (choice == 0) {
+        printf("Edit cancelled.\n");
+        free(movie_array->movies);
+        free(movie_array);
+        return;
+    }
+
+    if (choice == 1) {
+        printf("Enter new title: ");
+        char new_title[100];
+        fgets(new_title, sizeof(new_title), stdin);
+        deleteEnter(new_title);
+
+        if (strlen(new_title) == 0) {
+            printf("Title cannot be empty!\n");
+            free(movie_array->movies);
+            free(movie_array);
+            return;
+        }
+
+        strncpy(found_movie->title, new_title, sizeof(found_movie->title) - 1);
+        found_movie->title[sizeof(found_movie->title) - 1] = '\0';
+        printf("Title updated successfully!\n");
+    } 
+    else if (choice == 2) {
+        int new_duration = input_id("Enter new duration (minutes): ", 50);
+        if (new_duration <= 0) {
+            printf("Duration must be greater than 0!\n");
+            free(movie_array->movies);
+            free(movie_array);
+            return;
+        }
+        found_movie->duration = new_duration;
+        printf("Duration updated successfully!\n");
+    } 
+    else {
+        printf("Invalid choice!\n");
+        free(movie_array->movies);
+        free(movie_array);
+        return;
+    }
+
+    // Write all movies back to file
+    FILE *movie_file = fopen(MOVIE_SOURCE_PATH, "w");
+    if (movie_file == NULL) {
+        fprintf(stderr, "Failed to open movie file for writing.\n");
+        free(movie_array->movies);
+        free(movie_array);
+        return;
+    }
+
+    // Write header
+    fprintf(movie_file, "movie_id,title,duration\n");
+
+    // Write all movies
+    for (int i = 0; i < movie_array->count; i++) {
+        fprintf(movie_file, "%d,%s,%d\n", 
+                movie_array->movies[i].movie_id,
+                movie_array->movies[i].title,
+                movie_array->movies[i].duration);
+    }
+
+    fclose(movie_file);
+    printf("\nMovie updated successfully!\n");
+    print_movie_details(found_movie);
+
+    free(movie_array->movies);
+    free(movie_array);
 }
 
 /**
@@ -137,7 +306,7 @@ static void print_movie_details(const Movie *movie) {
     printf("Duration: %d minutes\n", movie->duration);
 }
 
-void delete_movie() {
+void delete_movie(int movie_id) {
     int movie_id = input_id("Enter the ID of the movie you want to delete: ", MAX_MOVIE_NAME);
 
     if (movie_id == -1) {
