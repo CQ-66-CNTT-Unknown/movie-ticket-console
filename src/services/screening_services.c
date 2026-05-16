@@ -95,6 +95,87 @@ void view_screenings() {
     free(movie_array);
 }
 
+Screening choose_screening(Screening *a) {
+    MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
+    ScreeningArray *screening_array = get_all_screenings(SCREENING_SOURCE_PATH);
+
+    if (screening_array == NULL) {
+        fprintf(stderr, "Failed to load screening data.\n");
+        return (Screening){-1, -1, 0, 0, -1};
+    }
+
+    if (movie_array == NULL) {
+        fprintf(stderr, "Failed to load movie data.\n");
+        free(screening_array->screenings);
+        free(screening_array);
+        return (Screening){-1, -1, 0, 0, -1};
+    }
+
+    if (screening_array->count == 0) {
+        printf("No screenings available.\n");
+        free(screening_array->screenings);
+        free(screening_array);
+        free(movie_array->movies);
+        free(movie_array);
+        return (Screening){-1, -1, 0, 0, -1};
+    }
+
+    printf("\n===== CHOOSE SCREENING =====\n");
+    print_screening_table_header();
+
+    for (int i = 0; i < screening_array->count; i++) {
+        Screening *current_screening = &screening_array->screenings[i];
+        Movie *associated_movie = find_movie_by_id(movie_array, current_screening->movie_id);
+
+        if (associated_movie != NULL) {
+            print_screening_info(current_screening, associated_movie);
+        } else {
+            fprintf(stderr, "Warning: Movie with ID %d not found for screening ID %d\n", current_screening->movie_id,
+                    current_screening->screening_id);
+        }
+    }
+
+    // Get user choice
+    int choice = -1;
+    printf("\nEnter the screening ID to select (or -1 to cancel): ");
+    inputNumber(&choice);
+
+    if (choice == -1) {
+        printf("Operation cancelled.\n");
+        free(screening_array->screenings);
+        free(screening_array);
+        free(movie_array->movies);
+        free(movie_array);
+        return (Screening){-1, -1, 0, 0, -1};
+    }
+
+    // Find the screening with the selected ID
+    for (int i = 0; i < screening_array->count; i++) {
+        if (screening_array->screenings[i].screening_id == choice) {
+            *a = screening_array->screenings[i];
+            
+            // Find and print the movie title
+            Movie *associated_movie = find_movie_by_id(movie_array, a->movie_id);
+            if (associated_movie != NULL) {
+                printf("\nSelected: Screening %d - %s\n", a->screening_id, associated_movie->title);
+            }
+            
+            free(screening_array->screenings);
+            free(screening_array);
+            free(movie_array->movies);
+            free(movie_array);
+            return *a;
+        }
+    }
+
+    printf("Screening ID %d not found!\n", choice);
+    free(screening_array->screenings);
+    free(screening_array);
+    free(movie_array->movies);
+    free(movie_array);
+    return (Screening){-1, -1, 0, 0, -1};
+}
+
 void show_seat_map(int screening_id) {
     TicketArray *ticket_array = get_all_tickets(TICKET_SOURCE_PATH);
     
