@@ -49,11 +49,10 @@ int input_id(const char *prompt, int buffer_size) {
     return result;
 }
 
-void nhapSo(int *so)
-{
-    while(!scanf("%d",so))
-    {
-        while(getchar()!='\n');         // loại bỏ kí tự thừa trong buffer kể cả \n
+void nhapSo(int *so) {
+    while (!scanf("%d", so)) {
+        while (getchar() != '\n')
+            ; // loại bỏ kí tự thừa trong buffer kể cả \n
         printf("\nPhím được nhập không hợp lệ vui lòng nhập lại: ");
     }
 }
@@ -65,11 +64,13 @@ void deleteEnter(char *s) {
     }
 }
 
-void inputNumber(int* choice) {
+void inputNumber(int *choice) {
     printf("Enter your choice: ");
     while (scanf("%d", choice) != 1) {
-        while (getchar() != '\n'); // Clear the input buffer
+        while (getchar() != '\n')
+            ; // Clear the input buffer
         printf("Invalid input. Please enter a valid number: ");
     }
-    while (getchar() != '\n'); // Clear remaining input
+    while (getchar() != '\n')
+        ; // Clear remaining input
 }

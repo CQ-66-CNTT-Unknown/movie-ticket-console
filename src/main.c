@@ -1,53 +1,93 @@
-
 #include <stdio.h>
 #include <unistd.h>
+#include "../include/constanst.h"
+#include "../include/models/user.h"
 #include "../include/services/auth.h"
 #include "../include/services/customer_services.h"
+#include "../include/services/manager_services.h"
+#include "../include/services/movie_services.h"
+#include "../include/services/screening_services.h"
 #include "../include/utils/menu.h"
-#include "../include/models/user.h"
+
+#include <stdlib.h>
 
 int main() {
     printf("Welcome to our cinema ticket booking system!\n");
 
-    User user = {1, "TestUser", CUSTOMER};
+    User *user = login();
 
     int choice;
 
     while (1) {
-        show_actions_menu(user.role);
+        show_actions_menu(user->role);
 
         if (scanf("%d", &choice) != 1) {
-            while (getchar() != '\n');
+            while (getchar() != '\n')
+                ;
             printf("Vui long nhap so hop le!\n");
             continue;
         }
-        while (getchar() != '\n'); // flush
-
-        if (user.role == CUSTOMER) {
+        while (getchar() != '\n')
+            ;
+        if (user->role == CUSTOMER) {
             switch (choice) {
                 case 1:
-                    printf("chuc nang xem suat chieu\n");
+                    view_screenings();
                     break;
                 case 2:
-                    printf("chuc nang tim kiem .\n");
+                    search_movie_by_name();
                     break;
                 case 3:
-                    printf("chuc nang xem so do ghe .\n");
+                    show_seat_map();
                     break;
                 case 4:
-                    book_ticket(0, 0);
+                    book_ticket(user->user_id, 0);
                     break;
                 case 5:
-                    cancel_ticket(user.user_id);
+                    cancel_ticket(user->user_id);
                     break;
                 case 6:
-                    view_purchase_history(user.user_id);
+                    view_purchase_history(user->user_id);
                     break;
-                case 7:
+                case 0:
                     printf("Da dang xuat !!!!!\n");
+                    free(user);
                     return 0;
                 default:
                     printf("Lua chon khong hop le vui long chi chon 1-7.\n");
+            }
+        } else if (user->role == MANAGER) {
+            switch (choice) {
+                case 1:
+                    view_screenings();
+                    break;
+                case 2:
+                    search_movie_by_name();
+                    break;
+                case 3:
+                    add_movie();
+                    break;
+                case 4:
+                    edit_movie();
+                    break;
+                case 5:
+                    delete_movie();
+                    break;
+                case 6:
+                    create_screening();
+                    break;
+                case 7:
+                    printf("Tinh nang nay dang duoc phat trien, vui long quay lai sau!\n");
+                    break;
+                case 8:
+                    cancel_screening();
+                    break;
+                case 0:
+                    printf("Da dang xuat !!!!!\n");
+                    free(user);
+                    return 0;
+                default:
+                    printf("Lua chon khong hop le vui long chi chon 1-9.\n");
             }
         }
     }

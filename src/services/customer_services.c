@@ -187,7 +187,7 @@ static float get_services_fee() {
     return total_service;
 }
 
-// create a new ticket_id
+
 static int generate_new_ticket_id() {
     TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
     int max_id = 0;
@@ -202,7 +202,6 @@ static int generate_new_ticket_id() {
     return max_id + 1;
 }
 
-// the book ticket
 void book_ticket(int screening_id, char seat_code) {
     int actual_screening_id;
     char actual_seat_code[10];
@@ -250,11 +249,9 @@ void book_ticket(int screening_id, char seat_code) {
             break;
     }
 
-    // select target customers
     char customer_type_str[50];
     float discount_rate = get_customer_discount(customer_type_str);
 
-    // choose a seat
     display_seat_map(actual_screening_id);
 
     while (true) {
@@ -277,7 +274,6 @@ void book_ticket(int screening_id, char seat_code) {
             continue;
         }
 
-        // Check if the seats have been reserved
         bool seat_taken = false;
         TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
         if (tickets != NULL) {
@@ -299,10 +295,8 @@ void book_ticket(int screening_id, char seat_code) {
         break;
     }
 
-    // Choose additional services
     float service_fee = get_services_fee();
 
-    // Calculate the price and confirm the ticket purchase
     int seat_multiplier = (actual_seat_code[0] == 'E') ? 2 : 1; 
     
     float base_price = selected_screening->price;
@@ -339,7 +333,6 @@ void book_ticket(int screening_id, char seat_code) {
         return;
     }
 
-    // Save tickets
     int new_ticket_id = generate_new_ticket_id();
     FILE *ticket_file = fopen(TICKET_SOURCE_PATH, "a");
     if (ticket_file == NULL) {
@@ -357,7 +350,8 @@ void book_ticket(int screening_id, char seat_code) {
     free(screenings->screenings);
     free(screenings);
 }
-// Display tickets owned by the current user
+
+
 static int display_user_tickets(int user_id) {
     TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
     ScreeningArray *screenings = get_all_screenings(SCREENING_SOURCE_PATH);

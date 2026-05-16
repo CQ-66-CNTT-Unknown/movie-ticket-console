@@ -6,8 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define USER_SOURCE_PATH "data/user.csv"
-#define N_USER_FIELDS 4
 
 User *get_user_by_credentials(const char *username, const char *password, const char *user_source_path) {
     FILE *user_source = fopen(user_source_path, "r");
