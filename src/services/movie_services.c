@@ -11,6 +11,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * @brief Prints the details of a movie to the console
+ * @param movie Pointer to the Movie struct whose details are to be printed
+ */
+static void print_movie_details(const Movie *movie) {
+    printf("Movie Details:\n");
+    printf("ID: %d\n", movie->movie_id);
+    printf("Title: %s\n", movie->title);
+    printf("Duration: %d minutes\n", movie->duration);
+}
+
 void display_all_movies() {
     MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
 
@@ -182,8 +193,10 @@ void add_movie() {
     free(movie_array);
 }
 
-void edit_movie(int movie_id) {
-    if (movie_id == -1) {
+void edit_movie() {
+    int movie_id = input_id("Enter the ID of the movie you want to edit: ", MAX_MOVIE_NAME);
+
+    if (movie_id <= -1) {
         printf("The ID is invalid!\n");
         return;
     }
@@ -295,21 +308,10 @@ void edit_movie(int movie_id) {
     free(movie_array);
 }
 
-/**
- * @brief Prints the details of a movie to the console
- * @param movie Pointer to the Movie struct whose details are to be printed
- */
-static void print_movie_details(const Movie *movie) {
-    printf("Movie Details:\n");
-    printf("ID: %d\n", movie->movie_id);
-    printf("Title: %s\n", movie->title);
-    printf("Duration: %d minutes\n", movie->duration);
-}
-
-void delete_movie(int movie_id) {
+void delete_movie() {
     int movie_id = input_id("Enter the ID of the movie you want to delete: ", MAX_MOVIE_NAME);
 
-    if (movie_id == -1) {
+    if (movie_id <= -1) {
         printf("Invalid input for movie ID.\n");
         return;
     }
