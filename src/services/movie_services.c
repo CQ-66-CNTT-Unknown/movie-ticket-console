@@ -16,10 +16,10 @@
  * @param movie Pointer to the Movie struct whose details are to be printed
  */
 static void print_movie_details(const Movie *movie) {
-    printf("Movie Details:\n");
+    printf("Thong tin phim:\n");
     printf("ID: %d\n", movie->movie_id);
-    printf("Title: %s\n", movie->title);
-    printf("Duration: %d minutes\n", movie->duration);
+    printf("Ten phim: %s\n", movie->title);
+    printf("Thoi luong: %d phut\n", movie->duration);
 }
 
 void display_all_movies() {
@@ -31,21 +31,21 @@ void display_all_movies() {
     }
 
     if (movie_array->count == 0) {
-        printf("No movies available.\n");
+        printf("Khong co phim nao.\n");
         free(movie_array->movies);
         free(movie_array);
         return;
     }
 
-    printf("\n===== ALL MOVIES =====\n");
-    printf("%-8s | %-40s | %-10s\n", "ID", "Title", "Duration");
+    printf("\n===== TAT CA PHIM =====\n");
+    printf("%-8s | %-40s | %-10s\n", "ID", "Ten phim", "Thoi luong");
     printf("-");
     for (int i = 0; i < 60; i++)
         printf("-");
     printf("\n");
 
     for (int i = 0; i < movie_array->count; i++) {
-        printf("%-8d | %-40s | %-10d minutes\n", movie_array->movies[i].movie_id, movie_array->movies[i].title,
+        printf("%-8d | %-40s | %-10d phut\n", movie_array->movies[i].movie_id, movie_array->movies[i].title,
                movie_array->movies[i].duration);
     }
 
@@ -95,7 +95,7 @@ void search_movie_by_name() {
 
     printf("\n===== SEARCH MOVIE BY NAME =====\n");
     char movie_input[MAX_MOVIE_NAME];
-    printf("Enter the movie name you want to find: ");
+    printf("Nhap ten phim: ");
     fgets(movie_input, sizeof(movie_input), stdin);
     deleteEnter(movie_input);
 
@@ -111,21 +111,21 @@ void search_movie_by_name() {
     }
 
     if (result_count == 0) {
-        printf("\nNo matching movies found.\n");
+        printf("\nKhong tim thay phim phu hop.\n");
         free(movie_array->movies);
         free(movie_array);
         return;
     }
 
     // Display results
-    printf("\n%-5s | %-40s | %-10s\n", "No.", "Title", "Duration");
+    printf("\n%-5s | %-40s | %-10s\n", "STT", "Ten phim", "Thoi luong");
     printf("-");
     for (int i = 0; i < 60; i++)
         printf("-");
     printf("\n");
 
     for (int i = 0; i < result_count; i++) {
-        printf("%-5d | %-40s | %-10d minutes\n", i + 1, results[i].title, results[i].duration);
+        printf("%-5d | %-40s | %-10d phut\n", i + 1, results[i].title, results[i].duration);
     }
 }
 
@@ -137,7 +137,7 @@ void add_movie() {
         return;
     }
 
-    printf("\n===== ADD NEW MOVIE =====\n");
+    printf("\n===== THEM PHIM MOI =====\n");
 
     // Get new movie ID (find max ID and add 1)
     int new_movie_id = 1;
@@ -157,7 +157,7 @@ void add_movie() {
 
     // Validate title is not empty
     if (strlen(title) == 0) {
-        printf("Movie title cannot be empty!\n");
+        printf("Ten phim khong the de trong!\n");
         free(movie_array->movies);
         free(movie_array);
         return;
@@ -166,7 +166,7 @@ void add_movie() {
     // Get movie duration from user
     int duration = input_id("Enter movie duration (minutes): ", 50);
     if (duration <= 0) {
-        printf("Movie duration must be greater than 0!\n");
+        printf("Thoi luong phim phai lon hon 0!\n");
         free(movie_array->movies);
         free(movie_array);
         return;
@@ -184,17 +184,17 @@ void add_movie() {
     fprintf(movie_file, "%d,%s,%d\n", new_movie_id, title, duration);
     fclose(movie_file);
 
-    printf("\nMovie added successfully!\n");
-    printf("Movie ID: %d\n", new_movie_id);
-    printf("Title: %s\n", title);
-    printf("Duration: %d minutes\n", duration);
+    printf("\nPhim da duoc them thanh cong!\n");
+    printf("ID phim: %d\n", new_movie_id);
+    printf("Ten phim: %s\n", title);
+    printf("Thoi luong: %d phut\n", duration);
 
     free(movie_array->movies);
     free(movie_array);
 }
 
 void edit_movie() {
-    int movie_id = input_id("Enter the ID of the movie you want to edit: ", 50);
+    int movie_id = input_id("Nhap ID cua phim ban muon chinh sua: ", 50);
 
     if (movie_id == -1) {
         printf("The ID is invalid!\n");
@@ -210,11 +210,10 @@ void edit_movie() {
 
     // Find the movie
     Movie *found_movie = NULL;
-    int movie_index = -1;
+    
     for (int i = 0; i < movie_array->count; i++) {
         if (movie_array->movies[i].movie_id == movie_id) {
             found_movie = &movie_array->movies[i];
-            movie_index = i;
             break;
         }
     }
@@ -229,30 +228,30 @@ void edit_movie() {
     printf("\n===== EDIT MOVIE =====\n");
     print_movie_details(found_movie);
 
-    printf("\nWhat do you want to edit?\n");
-    printf("1. Title\n");
-    printf("2. Duration\n");
-    printf("0. Cancel\n");
-    printf("Enter your choice: ");
+    printf("\nBan muon chinh sua thong tin nao?\n");
+    printf("1. Ten phim\n");
+    printf("2. Thoi luong\n");
+    printf("0. Huy bo\n");
+    printf("Nhap lua chon cua ban: ");
 
     int choice = -1;
     inputNumber(&choice);
 
     if (choice == 0) {
-        printf("Edit cancelled.\n");
+        printf("Chinh sua da bi huy.\n");
         free(movie_array->movies);
         free(movie_array);
         return;
     }
 
     if (choice == 1) {
-        printf("Enter new title: ");
+        printf("Nhap ten phim moi: ");
         char new_title[100];
         fgets(new_title, sizeof(new_title), stdin);
         deleteEnter(new_title);
 
         if (strlen(new_title) == 0) {
-            printf("Title cannot be empty!\n");
+            printf("Ten phim khong the de trong!\n");
             free(movie_array->movies);
             free(movie_array);
             return;
@@ -260,19 +259,19 @@ void edit_movie() {
 
         strncpy(found_movie->title, new_title, sizeof(found_movie->title) - 1);
         found_movie->title[sizeof(found_movie->title) - 1] = '\0';
-        printf("Title updated successfully!\n");
+        printf("Ten phim da duoc cap nhat!\n");
     } else if (choice == 2) {
-        int new_duration = input_id("Enter new duration (minutes): ", 50);
+        int new_duration = input_id("Nhap thoi luong moi (phut): ", 50);
         if (new_duration <= 0) {
-            printf("Duration must be greater than 0!\n");
+            printf("Thoi luong phai lon hon 0!\n");
             free(movie_array->movies);
             free(movie_array);
             return;
         }
         found_movie->duration = new_duration;
-        printf("Duration updated successfully!\n");
+        printf("Thoi luong da duoc cap nhat!\n");
     } else {
-        printf("Invalid choice!\n");
+        printf("Lua chon khong hop le!\n");
         free(movie_array->movies);
         free(movie_array);
         return;
@@ -305,29 +304,30 @@ void edit_movie() {
 }
 
 void delete_movie() {
-    int movie_id = input_id("Enter the ID of the movie you want to delete: ", MAX_MOVIE_NAME);
+    int movie_id = input_id("Nhap ID cua phim ban muon xoa: ", MAX_MOVIE_NAME);
 
     if (movie_id == -1) {
-        printf("Invalid input for movie ID.\n");
+        printf("ID phim khong hop le.\n");
         return;
     }
 
     bool is_scheduled = is_movie_scheduled(movie_id, SCREENING_SOURCE_PATH);
 
     if (is_scheduled) {
-        printf("The movie is scheduled, please cancel all related screenings before deleting the movie!\n");
+        printf("Phim da duoc dat lich chieu, vui long huy tat ca cac lich chieu lien quan truoc khi xoa phim!\n");
         return;
     }
 
-    if (!is_decision_yes("Delete movie with ID"))
+    if (!is_decision_yes("Xoa phim voi ID")) {
         return;
+    }
 
     Movie *deleted_movie = delete_movie_record(movie_id, MOVIE_SOURCE_PATH);
     if (deleted_movie != NULL) {
-        printf("Movie deleted successfully!\n");
+        printf("Phim da duoc xoa thanh cong!\n");
         print_movie_details(deleted_movie);
         free(deleted_movie);
     } else {
-        printf("Failed to delete the movie.\n");
+        printf("Khong the xoa phim.\n");
     }
 }

@@ -12,7 +12,7 @@
 #include <stdlib.h>
 
 int main() {
-    printf("Welcome to our cinema ticket booking system!\n");
+    printf("Chao mung den voi he thong dat ve xem phim!\n");
 
     User *user = login();
 
