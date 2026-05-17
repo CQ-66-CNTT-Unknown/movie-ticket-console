@@ -32,21 +32,24 @@ int main() {
         if (user->role == CUSTOMER) {
             switch (choice) {
                 case 1:
-                    view_screenings();
+                    display_all_movies();
                     break;
                 case 2:
                     search_movie_by_name();
                     break;
                 case 3:
-                    show_seat_map();
+                    view_screenings();
                     break;
                 case 4:
-                    book_ticket(user->user_id);
+                    show_seat_map();
                     break;
                 case 5:
-                    cancel_ticket(user->user_id);
+                    book_ticket(user->user_id);
                     break;
                 case 6:
+                    cancel_ticket(user->user_id);
+                    break;
+                case 7:
                     view_purchase_history(user->user_id);
                     break;
                 case 0:
@@ -54,12 +57,12 @@ int main() {
                     free(user);
                     return 0;
                 default:
-                    printf("Lua chon khong hop le vui long chi chon 1-7.\n");
+                    printf("Lua chon khong hop le vui long chi chon 1-8.\n");
             }
         } else if (user->role == MANAGER) {
             switch (choice) {
                 case 1:
-                    view_screenings();
+                    display_all_movies();
                     break;
                 case 2:
                     search_movie_by_name();

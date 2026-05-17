@@ -106,10 +106,11 @@ void show_customer_actions_menu() {
     printf(CYAN "  +========================================+\n" RESET);
     printf(CYAN "  |" GREEN "  1  " WHITE "| Xem Danh Sach Phim               " CYAN "|\n" RESET);
     printf(CYAN "  |" GREEN "  2  " WHITE "| Tim Kiem Phim                    " CYAN "|\n" RESET);
-    printf(CYAN "  |" GREEN "  3  " WHITE "| Xem So Do Ghe Ngoi               " CYAN "|\n" RESET);
-    printf(CYAN "  |" MAGENTA "  4  " WHITE "| Dat Ve Xem Phim                  " CYAN "|\n" RESET);
-    printf(CYAN "  |" MAGENTA "  5  " WHITE "| Huy Ve Da Mua                    " CYAN "|\n" RESET);
-    printf(CYAN "  |" MAGENTA "  6  " WHITE "| Lich Su Mua Ve                   " CYAN "|\n" RESET);
+    printf(CYAN "  |" GREEN "  3  " WHITE "| Xem Suat Chieu                   " CYAN "|\n" RESET);
+    printf(CYAN "  |" GREEN "  4  " WHITE "| Xem So Do Ghe Ngoi               " CYAN "|\n" RESET);
+    printf(CYAN "  |" MAGENTA "  5  " WHITE "| Dat Ve Xem Phim                  " CYAN "|\n" RESET);
+    printf(CYAN "  |" MAGENTA "  6  " WHITE "| Huy Ve Da Mua                    " CYAN "|\n" RESET);
+    printf(CYAN "  |" MAGENTA "  7  " WHITE "| Lich Su Mua Ve                   " CYAN "|\n" RESET);
     printf(CYAN "  +----------------------------------------+\n" RESET);
     printf(CYAN "  |" RED "  0  " WHITE "| Dang Xuat                        " CYAN "|\n" RESET);
     printf(CYAN "  +========================================+\n" RESET);
