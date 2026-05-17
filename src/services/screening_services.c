@@ -113,9 +113,9 @@ void show_seat_map() {
     printf("\n===== SEAT MAP FOR SCREENING %d =====\n", screening_id);
     printf("Legend: [.] = Available  [X] = Booked\n\n");
 
-    // Define room layout: 10 rows (A-J), 10 seats per row (1-10)
-    int rows = 10;
-    int seats_per_row = 10;
+    // Define room layout: 5 rows (A-E), 5 seats per row (1-5)
+    int rows = 5;
+    int seats_per_row = 5;
 
     // Create a seat matrix to track booked seats
     bool booked[rows][seats_per_row];
