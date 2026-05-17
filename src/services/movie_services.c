@@ -151,7 +151,7 @@ void add_movie() {
 
     // Get movie title from user
     char title[100];
-    printf("Enter movie title: ");
+    printf("Nhap ten phim: ");
     fgets(title, sizeof(title), stdin);
     deleteEnter(title);
 
@@ -164,7 +164,7 @@ void add_movie() {
     }
 
     // Get movie duration from user
-    int duration = input_id("Enter movie duration (minutes): ", 50);
+    int duration = input_id("Nhap thoi luong phim (phut): ", 50);
     if (duration <= 0) {
         printf("Thoi luong phim phai lon hon 0!\n");
         free(movie_array->movies);

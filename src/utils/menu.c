@@ -86,7 +86,7 @@ void show_manager_actions_menu() {
     printf(CYAN "  +========================================+\n" RESET);
     printf(CYAN "  |" GREEN "  1  " WHITE "| Xem Danh Sach Phim               " CYAN "|\n" RESET);
     printf(CYAN "  |" GREEN "  2  " WHITE "| Tim Kiem Phim                    " CYAN "|\n" RESET);
-    printf(CYAN "  |" GREEN "  3  " WHITE "| Chinh sua Phim                   " CYAN "|\n" RESET);
+    printf(CYAN "  |" GREEN "  3  " WHITE "| Them Phim                   " CYAN "|\n" RESET);
     printf(CYAN "  |" GREEN "  4  " WHITE "| Xoa Phim                         " CYAN "|\n" RESET);
     printf(CYAN "  |" GREEN "  5  " WHITE "| Xem Suat Chieu                   " CYAN "|\n" RESET);
     printf(CYAN "  |" GREEN "  6  " WHITE "| Tao Suat Chieu Moi               " CYAN "|\n" RESET);
