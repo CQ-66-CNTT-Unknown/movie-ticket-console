@@ -1,9 +1,101 @@
 movie_id,title,duration
-101,"The Shawshank Redemption",142
-102,"The Godfather",175
-103,"The Dark Knight",152
-104,"Pulp Fiction",154
-105,"Inception",148
-106,"Interstellar",169
-107,"Parasite",132
-108,"The Matrix",136
+101,Shawshank,142
+102,Godfather,175
+103,Dark Knight,152
+104,Godfather 2,202
+105,12 Angry Men,96
+106,Schindler,195
+107,LOTR 3,201
+108,Pulp Fiction,154
+109,LOTR 1,178
+110,Good Bad Ugly,161
+111,Forrest Gump,142
+112,Fight Club,139
+113,LOTR 2,179
+114,Inception,148
+115,Star Wars 5,124
+116,The Matrix,136
+117,Goodfellas,145
+118,Cuckoo Nest,133
+119,Se7en,127
+120,7 Samurai,207
+121,Wonder Life,130
+122,Silence Lambs,118
+123,City of God,130
+124,Saving Ryan,169
+125,Life Beautiful,116
+126,Green Mile,189
+127,Interstellar,169
+128,Star Wars 4,121
+129,Terminator 2,137
+130,Back to Future,116
+131,Spirited Away,125
+132,Psycho,109
+133,The Pianist,150
+134,Leon,110
+135,Parasite,132
+136,Lion King,89
+137,Gladiator,155
+138,American History,119
+139,The Departed,151
+140,Whiplash,106
+141,The Prestige,130
+142,Grave Fireflies,89
+143,Harakiri,133
+144,Casablanca,102
+145,Rear Window,112
+146,Cinema Paradiso,155
+147,Alien,117
+148,Apocalypse Now,147
+149,Memento,113
+150,Indiana Jones,115
+151,Endgame,181
+152,Infinity War,149
+153,The Avengers,143
+154,Spider-Man 3,148
+155,Black Panther,134
+156,Guardians,121
+157,Iron Man,126
+158,Thor Ragnarok,130
+159,Winter Soldier,136
+160,Justice League,242
+161,Wonder Woman,141
+162,Aquaman,143
+163,Joker,122
+164,The Batman,176
+165,Spider-Verse 1,117
+166,Spider-Verse 2,140
+167,Toy Story 1,81
+168,Toy Story 3,103
+169,Up,96
+170,Wall-E,98
+171,Finding Nemo,100
+172,Inside Out,95
+173,Coco,105
+174,Your Name,106
+175,Weathering,112
+176,Suzume,122
+177,Silent Voice,130
+178,Demon Slayer,117
+179,Jujutsu Kaisen,105
+180,How Train Dragon,98
+181,Mai,131
+182,Dad I Am Sorry,128
+183,The House of No Man,102
+184,Face Off 6,132
+185,Furie,98
+186,Dreamy Eyes,117
+187,Blood Moon Party,118
+188,Song of South,139
+189,Em and Trinh,136
+190,Sweet Trap,90
+191,Sisters 2,115
+192,The Con Masters,112
+193,Last Wife,132
+194,The Soul Reaper,109
+195,Mad Dog,108
+196,Past Girl,105
+197,Old Chick 3,115
+198,Go-Go Sisters,118
+199,Jailbait,95
+200,Dune 2,166

@@ -65,11 +65,11 @@ void deleteEnter(char *s) {
 }
 
 void inputNumber(int *choice) {
-    printf("Enter your choice: ");
+    printf("Nhap lua chon: ");
     while (scanf("%d", choice) != 1) {
         while (getchar() != '\n')
             ; // Clear the input buffer
-        printf("Invalid input. Please enter a valid number: ");
+        printf("Du lieu nhap vao khong hop le. Vui long nhap mot so hop le: ");
     }
     while (getchar() != '\n')
         ; // Clear remaining input

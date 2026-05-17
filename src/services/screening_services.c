@@ -99,7 +99,7 @@ void show_seat_map() {
     int screening_id = input_id("Enter screening ID to view seat map: ", 50);
 
     while (screening_id == -1) {
-        printf("Invalid screening ID. Please enter a valid number.\n");
+        printf("ID lich chieu khong hop le.\n");
         screening_id = input_id("Enter screening ID to view seat map: ", 50);
     }
 
@@ -110,8 +110,8 @@ void show_seat_map() {
         return;
     }
 
-    printf("\n===== SEAT MAP FOR SCREENING %d =====\n", screening_id);
-    printf("Legend: [.] = Available  [X] = Booked\n\n");
+    printf("\n===== BAN DO GHE NGOI %d =====\n", screening_id);
+    printf("Ky hieu: [.] = Trong  [X] = Da dat\n\n");
 
     // Define room layout: 5 rows (A-E), 5 seats per row (1-5)
     int rows = 5;
@@ -161,7 +161,7 @@ void create_screening() {
     int movie_id = input_id("Enter movie ID for the new screening: ", 50);
 
     while (movie_id == -1) {
-        printf("Invalid movie ID. Please enter a valid number.\n");
+        printf("ID phim khong hop le. Vui long nhap mot so hop le.\n");
         movie_id = input_id("Enter movie ID for the new screening: ", 50);
     }
 
@@ -188,7 +188,7 @@ void create_screening() {
         return;
     }
 
-    printf("\n===== CREATE SCREENING FOR MOVIE: %s =====\n", found_movie->title);
+    printf("\n===== TAO LICH CHIEU CHO PHIM: %s =====\n", found_movie->title);
 
     // Get new screening ID (find max ID and add 1)
     ScreeningArray *screening_array = get_all_screenings(SCREENING_SOURCE_PATH);
@@ -205,7 +205,7 @@ void create_screening() {
     }
 
     // Input screening details
-    printf("Enter screening date and time (YYYY-MM-DD HH:MM format): ");
+    printf("Nhap ngay va gio lich chieu (dinh dang YYYY-MM-DD HH:MM): ");
     char datetime_str[50];
     fgets(datetime_str, sizeof(datetime_str), stdin);
     datetime_str[strcspn(datetime_str, "\n")] = '\0';
@@ -253,12 +253,12 @@ void create_screening() {
     fprintf(screening_file, "%d,%d,%lld,%.0f,%d\n", new_screening_id, movie_id, start_time, price, room_number);
     fclose(screening_file);
 
-    printf("\nScreening created successfully!\n");
-    printf("Screening ID: %d\n", new_screening_id);
-    printf("Movie: %s\n", found_movie->title);
-    printf("Start time: %s\n", ctime(&start_time));
-    printf("Price: %.0f VND\n", price);
-    printf("Room: %d\n", room_number);
+    printf("\nLich chieu da duoc tao thanh cong!\n");
+    printf("ID lich chieu: %d\n", new_screening_id);
+    printf("Phim: %s\n", found_movie->title);
+    printf("Thoi gian bat dau: %s\n", ctime(&start_time));
+    printf("Gia ve: %.0f VND\n", price);
+    printf("Phong chieu: %d\n", room_number);
 
     free(movie_array->movies);
     free(movie_array);
@@ -269,21 +269,21 @@ void create_screening() {
  * @param screening The screening for which to print details
  */
 static void print_screening_details(Screening *screening) {
-    printf("Screening Details:\n");
+    printf("Thong tin lich chieu:\n");
     printf("ID: %d\n", screening->screening_id);
-    printf("Movie ID: %d\n", screening->movie_id);
+    printf("ID phim: %d\n", screening->movie_id);
     char time_str[26];
     strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", localtime(&screening->start_time));
-    printf("Start Time: %s\n", time_str);
-    printf("Price: %.0f VND\n", screening->price);
-    printf("Room Number: %d\n", screening->room_number);
+    printf("Thoi gian bat dau: %s\n", time_str);
+    printf("Gia ve: %.0f VND\n", screening->price);
+    printf("Phong chieu: %d\n", screening->room_number);
 }
 
 void cancel_screening() {
-    int screening_id = input_id("Enter the ID of the screening you want to cancel: ", 50);
-    
+    int screening_id = input_id("Nhap ID cua lich chieu ban muon huy: ", 50);
+
     if (screening_id == -1) {
-        printf("The ID is invalid!\n");
+        printf("ID lich chieu khong hop le!\n");
         return;
     }
 
@@ -296,11 +296,11 @@ void cancel_screening() {
 
 
     if (deleted_screening != NULL) {
-        printf("Screening cancelled successfully!\n");
+        printf("Lich chieu da duoc huy thanh cong!\n");
         print_screening_details(deleted_screening);
         free(deleted_screening);
     } else {
-        printf("Failed to cancel the screening.\n");
+        printf("Khong the huy lich chieu.\n");
     }
 }
 
@@ -321,7 +321,7 @@ Screening choose_screening(Screening *a) {
     }
 
     if (screening_array->count == 0) {
-        printf("No screenings available.\n");
+        printf("\nKhong co lich chieu nao de chon.\n");
         free(screening_array->screenings);
         free(screening_array);
         free(movie_array->movies);
@@ -329,7 +329,7 @@ Screening choose_screening(Screening *a) {
         return (Screening){-1, -1, 0, 0, -1};
     }
 
-    printf("\n===== CHOOSE SCREENING =====\n");
+    printf("\n===== CHON LICH CHIEU =====\n");
     print_screening_table_header();
 
     for (int i = 0; i < screening_array->count; i++) {
@@ -346,11 +346,11 @@ Screening choose_screening(Screening *a) {
 
     // Get user choice
     int choice = -1;
-    printf("\nEnter the screening ID to select (or -1 to cancel): ");
+    printf("\nNhap ID cua lich chieu ban muon chon (hoac -1 de huy): ");
     inputNumber(&choice);
 
     if (choice == -1) {
-        printf("Operation cancelled.\n");
+        printf("Chon lich chieu da bi huy.\n");
         free(screening_array->screenings);
         free(screening_array);
         free(movie_array->movies);
@@ -366,7 +366,7 @@ Screening choose_screening(Screening *a) {
             // Find and print the movie title
             Movie *associated_movie = find_movie_by_id(movie_array, a->movie_id);
             if (associated_movie != NULL) {
-                printf("\nSelected: Screening %d - %s\n", a->screening_id, associated_movie->title);
+                printf("\nSuat chieu duoc chon: %d - %s\n", a->screening_id, associated_movie->title);
             }
             
             free(screening_array->screenings);
