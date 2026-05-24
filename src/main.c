@@ -77,12 +77,15 @@ int main() {
                     delete_movie();
                     break;
                 case 6:
-                    create_screening();
+                    view_screenings();
                     break;
                 case 7:
-                    cancel_screening();
+                    create_screening();
                     break;
                 case 8:
+                    cancel_screening();
+                    break;
+                case 9:
                     show_revenue_report();
                     break;
                 case 0:
