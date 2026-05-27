@@ -1,23 +1,25 @@
 #include "../../include/services/customer_services.h"
-#include "../../include/constanst.h"
-#include "../../include/repos/ticket_repo.h"
-#include "../../include/repos/movie_repo.h"
-#include "../../include/repos/screening_repo.h"
-#include "../../include/utils/input_utils.h"
-#include "../../include/utils/decision_utils.h"
 
+#include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
 #include <time.h>
+
+#include "../../include/constanst.h"
+#include "../../include/repos/movie_repo.h"
+#include "../../include/repos/screening_repo.h"
+#include "../../include/repos/ticket_repo.h"
+#include "../../include/utils/decision_utils.h"
+#include "../../include/utils/input_utils.h"
 
 // Search for movie title by movie_id
 static void get_movie_title(int movie_id, char *out_title, int out_size) {
     MovieArray *movies = get_all_movies(MOVIE_SOURCE_PATH);
     strncpy(out_title, "Unknown", out_size - 1);
-    if (movies == NULL) return;
+    if (movies == NULL)
+        return;
     for (int i = 0; i < movies->count; i++) {
         if (movies->movies[i].movie_id == movie_id) {
             strncpy(out_title, movies->movies[i].title, out_size - 1);
@@ -25,22 +27,22 @@ static void get_movie_title(int movie_id, char *out_title, int out_size) {
             break;
         }
     }
-    if (movies->movies) free(movies->movies);
+    if (movies->movies)
+        free(movies->movies);
     free(movies);
 }
 
 // Display the list of showtimes
 static void display_screenings(ScreeningArray *screenings) {
     printf("\n+------+----------------------------+---------------------+----------+------+\n");
-    printf(YELLOW "| %-4s | %-26s | %-19s | %-8s | %-4s |\n",
-           "ID", "Phim", "Gio chieu", "Gia ve", "Phong" RESET);
+    printf(BOLD_YELLOW "| %-4s | %-26s | %-19s | %-8s | %-4s |\n", "ID", "Phim", "Gio chieu", "Gia ve", "Phong" RESET);
     printf("+------+----------------------------+---------------------+----------+------+\n");
 
     for (int i = 0; i < screenings->count; i++) {
         Screening *s = &screenings->screenings[i];
 
         // Format time using Unix timestamp
-        time_t t = (time_t)s->start_time;
+        time_t t = (time_t) s->start_time;
         struct tm *tm_info = localtime(&t);
         char time_str[20];
         strftime(time_str, sizeof(time_str), "%d/%m/%Y %H:%M", tm_info);
@@ -48,8 +50,7 @@ static void display_screenings(ScreeningArray *screenings) {
         // Get the movie name
         char title[100];
         get_movie_title(s->movie_id, title, sizeof(title));
-        printf("| %-4d | %-26s | %-19s | %8.0f | %-4d |\n",
-               s->screening_id, title, time_str, s->price, s->room_number);
+        printf("| %-4d | %-26s | %-19s | %8.0f | %-4d |\n", s->screening_id, title, time_str, s->price, s->room_number);
     }
     printf("+------+----------------------------+---------------------+----------+------+\n");
 }
@@ -74,38 +75,42 @@ static void display_seat_map(int screening_id) {
                 }
             }
         }
-        if (tickets->tickets) free(tickets->tickets);
+        if (tickets->tickets)
+            free(tickets->tickets);
         free(tickets);
     }
 
-    printf(RED "\n========= SO DO GHE NGOI (Suat chieu %d) =========\n" RESET, screening_id);
+    printf(BOLD_RED "\n========= SO DO GHE NGOI (Suat chieu %d) =========\n" RESET, screening_id);
     printf("                  [ MAN HINH ]\n\n");
 
     printf("      ");
-    for (int j = 1; j <= 5; j++) printf("  %d   ", j);
+    for (int j = 1; j <= 5; j++)
+        printf("  %d   ", j);
     printf("\n");
 
     for (int i = 0; i < 5; i++) {
         printf("      ");
-        for (int j = 0; j < 5; j++) printf("+-----");
+        for (int j = 0; j < 5; j++)
+            printf("+-----");
         printf("+\n");
 
         printf("  %c   ", 'A' + i);
         for (int j = 0; j < 5; j++) {
             if (seats[i][j] == 'X')
-                printf("|[XXX]");  // reserved seats
+                printf("|[XXX]"); // reserved seats
             else {
                 if (i == 4) // Row E - Double Seats
-                    printf("|[< >]"); 
+                    printf("|[< >]");
                 else
-                    printf("|[   ]");  // empty seats
+                    printf("|[   ]"); // empty seats
             }
         }
         printf("|\n");
     }
 
     printf("      ");
-    for (int j = 0; j < 5; j++) printf("+-----");
+    for (int j = 0; j < 5; j++)
+        printf("+-----");
     printf("+\n");
 
     printf("\n  [   ] = Trong    [XXX] = Da dat    [< >] = Ghe doi (Hang E - Gia x2)\n");
@@ -113,9 +118,9 @@ static void display_seat_map(int screening_id) {
 }
 
 // Customer selection table
-static float get_customer_discount(char* customer_type_str) {
+static float get_customer_discount(char *customer_type_str) {
     int choice;
-    while(true) {
+    while (true) {
         printf("\n+================================================+\n");
         printf("|             CHON DOI TUONG KHACH HANG          |\n");
         printf("+================================================+\n");
@@ -125,11 +130,13 @@ static float get_customer_discount(char* customer_type_str) {
         printf("+================================================+\n");
         printf("Nhap lua chon cua ban (1-3): ");
         if (scanf("%d", &choice) != 1) {
-            while(getchar() != '\n');
+            while (getchar() != '\n')
+                ;
             printf("Lua chon khong hop le! Vui long nhap so.\n");
             continue;
         }
-        while(getchar() != '\n');
+        while (getchar() != '\n')
+            ;
 
         if (choice == 1) {
             strcpy(customer_type_str, "Hoc sinh - Sinh vien (-10%)");
@@ -150,7 +157,7 @@ static float get_customer_discount(char* customer_type_str) {
 static float get_services_fee() {
     int choice;
     float total_service = 0;
-    while(true) {
+    while (true) {
         printf("\n+================================================+\n");
         printf("|                 DICH VU DI KEM                 |\n");
         printf("+================================================+\n");
@@ -161,13 +168,15 @@ static float get_services_fee() {
         printf("+================================================+\n");
         printf("Tam tinh tien dich vu: %.0f VND\n", total_service);
         printf("Nhap lua chon cua ban (0-3): ");
-        
+
         if (scanf("%d", &choice) != 1) {
-            while(getchar() != '\n');
+            while (getchar() != '\n')
+                ;
             printf("Lua chon khong hop le!\n");
             continue;
         }
-        while(getchar() != '\n');
+        while (getchar() != '\n')
+            ;
 
         if (choice == 0) {
             break;
@@ -196,7 +205,8 @@ static int generate_new_ticket_id() {
             if (tickets->tickets[i].ticket_id > max_id)
                 max_id = tickets->tickets[i].ticket_id;
         }
-        if (tickets->tickets) free(tickets->tickets);
+        if (tickets->tickets)
+            free(tickets->tickets);
         free(tickets);
     }
     return max_id + 1;
@@ -211,7 +221,8 @@ void book_ticket(int user_id) {
 
     if (screenings == NULL || screenings->count == 0) {
         printf("Hien tai khong co suat chieu nao.\n");
-        if (screenings) free(screenings);
+        if (screenings)
+            free(screenings);
         return;
     }
 
@@ -221,11 +232,13 @@ void book_ticket(int user_id) {
     while (true) {
         printf("\nNhap ID suat chieu muon mua (0 de thoat): ");
         if (scanf("%d", &actual_screening_id) != 1) {
-            while (getchar() != '\n');
+            while (getchar() != '\n')
+                ;
             printf("Vui long nhap so hop le!\n");
             continue;
         }
-        while (getchar() != '\n');
+        while (getchar() != '\n')
+            ;
 
         if (actual_screening_id == 0) {
             free(screenings->screenings);
@@ -256,7 +269,8 @@ void book_ticket(int user_id) {
     while (true) {
         printf("Nhap ma ghe (vi du: A1, E3) hoac Q de thoat: ");
         scanf("%s", actual_seat_code);
-        while (getchar() != '\n');
+        while (getchar() != '\n')
+            ;
 
         if (strcmp(actual_seat_code, "Q") == 0 || strcmp(actual_seat_code, "q") == 0) {
             free(screenings->screenings);
@@ -266,8 +280,7 @@ void book_ticket(int user_id) {
 
         actual_seat_code[0] = toupper(actual_seat_code[0]);
 
-        if (strlen(actual_seat_code) != 2 ||
-            actual_seat_code[0] < 'A' || actual_seat_code[0] > 'E' ||
+        if (strlen(actual_seat_code) != 2 || actual_seat_code[0] < 'A' || actual_seat_code[0] > 'E' ||
             actual_seat_code[1] < '1' || actual_seat_code[1] > '5') {
             printf("Loi: Ma ghe khong hop le (phai tu A1 den E5). Nhap lai.\n");
             continue;
@@ -283,7 +296,8 @@ void book_ticket(int user_id) {
                     break;
                 }
             }
-            if (tickets->tickets) free(tickets->tickets);
+            if (tickets->tickets)
+                free(tickets->tickets);
             free(tickets);
         }
 
@@ -296,8 +310,8 @@ void book_ticket(int user_id) {
 
     float service_fee = get_services_fee();
 
-    int seat_multiplier = (actual_seat_code[0] == 'E') ? 2 : 1; 
-    
+    int seat_multiplier = (actual_seat_code[0] == 'E') ? 2 : 1;
+
     float base_price = selected_screening->price;
     float discounted_price = base_price * discount_rate;
     float seat_price = discounted_price * seat_multiplier;
@@ -312,13 +326,13 @@ void book_ticket(int user_id) {
     printf("| Phim         : %-31s |\n", title);
     printf("| ID Suat chieu: %-31d |\n", actual_screening_id);
     printf("| Loai khach   : %-31s |\n", customer_type_str);
-    
+
     if (seat_multiplier == 2) {
         printf("| Ma ghe       : %-9s (Ghe doi VIP x2)       |\n", actual_seat_code);
     } else {
         printf("| Ma ghe       : %-31s |\n", actual_seat_code);
     }
-    
+
     printf("| Tien ghe     : %-27.0f VND |\n", seat_price);
     printf("| Tien dich vu : %-27.0f VND |\n", service_fee);
     printf("+------------------------------------------------+\n");
@@ -340,8 +354,7 @@ void book_ticket(int user_id) {
         free(screenings);
         return;
     }
-    fprintf(ticket_file, "%d,%d,%d,%s\n",
-            new_ticket_id, actual_screening_id,user_id, actual_seat_code);
+    fprintf(ticket_file, "%d,%d,%d,%s\n", new_ticket_id, actual_screening_id, user_id, actual_seat_code);
     fclose(ticket_file);
 
     printf("\n[HOAN TAT] Mua ve thanh cong! ID ve cua ban la: %d\n", new_ticket_id);
@@ -356,8 +369,14 @@ static int display_user_tickets(int user_id) {
     ScreeningArray *screenings = get_all_screenings(SCREENING_SOURCE_PATH);
 
     if (tickets == NULL || screenings == NULL) {
-        if (tickets) { free(tickets->tickets); free(tickets); }
-        if (screenings) { free(screenings->screenings); free(screenings); }
+        if (tickets) {
+            free(tickets->tickets);
+            free(tickets);
+        }
+        if (screenings) {
+            free(screenings->screenings);
+            free(screenings);
+        }
         return 0;
     }
 
@@ -372,7 +391,7 @@ static int display_user_tickets(int user_id) {
         if (tickets->tickets[i].customer_id == user_id) {
             count++;
             int s_id = tickets->tickets[i].screening_id;
-            
+
             // Find screening details
             Screening *s = NULL;
             for (int j = 0; j < screenings->count; j++) {
@@ -386,7 +405,7 @@ static int display_user_tickets(int user_id) {
                 char title[100];
                 get_movie_title(s->movie_id, title, sizeof(title));
 
-                time_t t = (time_t)s->start_time;
+                time_t t = (time_t) s->start_time;
                 struct tm *tm_info = localtime(&t);
                 char time_str[20];
                 strftime(time_str, sizeof(time_str), "%d/%m %H:%M", tm_info);
@@ -394,18 +413,22 @@ static int display_user_tickets(int user_id) {
                 // Check if screening has already happened
                 time_t now = time(NULL);
                 char status[20];
-                if (t <= now) strcpy(status, "Da chieu");
-                else strcpy(status, "Chua chieu");
+                if (t <= now)
+                    strcpy(status, "Da chieu");
+                else
+                    strcpy(status, "Chua chieu");
 
-                printf("| %-9d | %-25.25s | %-16s | %-6s | %-16s |\n",
-                       tickets->tickets[i].ticket_id, title, time_str, tickets->tickets[i].seat_code, status);
+                printf("| %-9d | %-25.25s | %-16s | %-6s | %-16s |\n", tickets->tickets[i].ticket_id, title, time_str,
+                       tickets->tickets[i].seat_code, status);
             }
         }
     }
     printf("+======================================================================================+\n");
 
-    free(tickets->tickets); free(tickets);
-    free(screenings->screenings); free(screenings);
+    free(tickets->tickets);
+    free(tickets);
+    free(screenings->screenings);
+    free(screenings);
 
     return count;
 }
@@ -422,17 +445,21 @@ void cancel_ticket(int current_user_id) {
     int target_ticket_id;
     printf("\nNhap ID ve ban muon huy (0 de thoat): ");
     if (scanf("%d", &target_ticket_id) != 1) {
-        while (getchar() != '\n');
+        while (getchar() != '\n')
+            ;
         printf("Loi: Vui long nhap so hop le!\n");
         return;
     }
-    while (getchar() != '\n');
+    while (getchar() != '\n')
+        ;
 
-    if (target_ticket_id == 0) return;
+    if (target_ticket_id == 0)
+        return;
 
     // Load ticket data
     TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
-    if (tickets == NULL) return;
+    if (tickets == NULL)
+        return;
 
     Ticket *target_ticket = NULL;
     for (int i = 0; i < tickets->count; i++) {
@@ -445,14 +472,16 @@ void cancel_ticket(int current_user_id) {
     // Ticket ID not found
     if (target_ticket == NULL) {
         printf("Loi: Khong tim thay ve voi ID da cung cap.\n");
-        free(tickets->tickets); free(tickets);
+        free(tickets->tickets);
+        free(tickets);
         return;
     }
 
     // Ticket doesn't belong to current user
     if (target_ticket->customer_id != current_user_id) {
         printf("Loi: Ban khong co quyen huy ve nay.\n");
-        free(tickets->tickets); free(tickets);
+        free(tickets->tickets);
+        free(tickets);
         return;
     }
 
@@ -471,10 +500,12 @@ void cancel_ticket(int current_user_id) {
     // Screening already started or ended
     if (target_screening != NULL) {
         time_t now = time(NULL);
-        if ((time_t)target_screening->start_time <= now) {
+        if ((time_t) target_screening->start_time <= now) {
             printf("Loi: Khong the huy ve cua suat chieu da bat dau hoac ket thuc.\n");
-            free(tickets->tickets); free(tickets);
-            free(screenings->screenings); free(screenings);
+            free(tickets->tickets);
+            free(tickets);
+            free(screenings->screenings);
+            free(screenings);
             return;
         }
     }
@@ -501,8 +532,12 @@ void cancel_ticket(int current_user_id) {
         printf("\n[THONG BAO] Da huy qua trinh xoa ve.\n");
     }
 
-    free(tickets->tickets); free(tickets);
-    if (screenings) { free(screenings->screenings); free(screenings); }
+    free(tickets->tickets);
+    free(tickets);
+    if (screenings) {
+        free(screenings->screenings);
+        free(screenings);
+    }
 }
 
 void view_purchase_history(int current_user_id) {
@@ -517,7 +552,8 @@ void view_purchase_history(int current_user_id) {
     ScreeningArray *screenings = get_all_screenings(SCREENING_SOURCE_PATH);
     if (screenings == NULL) {
         printf("\n[Loi] Khong the truy xuat du lieu suat chieu!\n");
-        if (tickets->tickets) free(tickets->tickets);
+        if (tickets->tickets)
+            free(tickets->tickets);
         free(tickets);
         return;
     }
@@ -533,27 +569,33 @@ void view_purchase_history(int current_user_id) {
     // Error no transactions have been made.
     if (ticket_count == 0) {
         printf("\nBan chua mua ve ma . Hay dat ve nao!\n");
-        
+
         // Clean up memory
-        if (tickets->tickets) free(tickets->tickets);
+        if (tickets->tickets)
+            free(tickets->tickets);
         free(tickets);
-        if (screenings->screenings) free(screenings->screenings);
+        if (screenings->screenings)
+            free(screenings->screenings);
         free(screenings);
         return;
     }
 
     // Ticket purchase history table
-    printf("\n+========================================================================================================+\n");
-    printf("|                                       LICH SU MUA VE CUA BAN                                           |\n");
-    printf("+---------+---------------------------+------------------+------+-------+------------+-------------------+\n");
-    printf("| %-7s | %-25s | %-16s | %-4s | %-5s | %-10s | %-17s |\n",
-           "ID Ve", "Ten Phim", "Gio chieu", "Ghe", "Phong", "Gia Ve", "Trang thai");
-    printf("+---------+---------------------------+------------------+------+-------+------------+-------------------+\n");
+    printf("\n+========================================================================================================"
+           "+\n");
+    printf("|                                       LICH SU MUA VE CUA BAN                                           "
+           "|\n");
+    printf("+---------+---------------------------+------------------+------+-------+------------+-------------------+"
+           "\n");
+    printf("| %-7s | %-25s | %-16s | %-4s | %-5s | %-10s | %-17s |\n", "ID Ve", "Ten Phim", "Gio chieu", "Ghe", "Phong",
+           "Gia Ve", "Trang thai");
+    printf("+---------+---------------------------+------------------+------+-------+------------+-------------------+"
+           "\n");
 
     for (int i = 0; i < tickets->count; i++) {
         if (tickets->tickets[i].customer_id == current_user_id) {
             int s_id = tickets->tickets[i].screening_id;
-            
+
             // Find showtime information
             Screening *s = NULL;
             for (int j = 0; j < screenings->count; j++) {
@@ -569,7 +611,7 @@ void view_purchase_history(int current_user_id) {
                 get_movie_title(s->movie_id, title, sizeof(title));
 
                 // projection time format
-                time_t t = (time_t)s->start_time;
+                time_t t = (time_t) s->start_time;
                 struct tm *tm_info = localtime(&t);
                 char time_str[20];
                 strftime(time_str, sizeof(time_str), "%d/%m/%Y %H:%M", tm_info);
@@ -577,30 +619,30 @@ void view_purchase_history(int current_user_id) {
                 // calculate projection status
                 time_t now = time(NULL);
                 char status[20];
-                if (t <= now) strcpy(status, "Da chieu");
-                else strcpy(status, "Chua chieu");
+                if (t <= now)
+                    strcpy(status, "Da chieu");
+                else
+                    strcpy(status, "Chua chieu");
 
                 // Recalculate ticket prices
                 float est_price = s->price * ((tickets->tickets[i].seat_code[0] == 'E') ? 2 : 1);
 
-                printf("| %-7d | %-25.25s | %-16s | %-4s | %-5d | %10.0f | %-17s |\n",
-                       tickets->tickets[i].ticket_id, 
-                       title, 
-                       time_str, 
-                       tickets->tickets[i].seat_code, 
-                       s->room_number, 
-                       est_price, 
-                       status);
+                printf("| %-7d | %-25.25s | %-16s | %-4s | %-5d | %10.0f | %-17s |\n", tickets->tickets[i].ticket_id,
+                       title, time_str, tickets->tickets[i].seat_code, s->room_number, est_price, status);
             }
         }
     }
-    printf("+---------+---------------------------+------------------+------+-------+------------+-------------------+\n");
+    printf("+---------+---------------------------+------------------+------+-------+------------+-------------------+"
+           "\n");
     printf("| Tong so ve da mua: %-83d |\n", ticket_count);
-    printf("+========================================================================================================+\n\n");
+    printf("+========================================================================================================+"
+           "\n\n");
 
     // Clean up memory
-    if (tickets->tickets) free(tickets->tickets);
+    if (tickets->tickets)
+        free(tickets->tickets);
     free(tickets);
-    if (screenings->screenings) free(screenings->screenings);
+    if (screenings->screenings)
+        free(screenings->screenings);
     free(screenings);
 }

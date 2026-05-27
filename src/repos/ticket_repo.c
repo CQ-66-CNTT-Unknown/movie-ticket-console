@@ -1,12 +1,13 @@
 #include "../../include/repos/ticket_repo.h"
-#include "../../include/constanst.h"
-#include "../../include/utils/csv_utils.h"
-#include "../../include/utils/get_temp_file_path.h"
 
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../../include/constanst.h"
+#include "../../include/utils/csv_utils.h"
+#include "../../include/utils/get_temp_file_path.h"
 
 TicketArray *get_all_tickets(const char *ticket_source_path) {
     FILE *ticket_source = fopen(ticket_source_path, "r");

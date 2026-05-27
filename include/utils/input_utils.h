@@ -18,4 +18,4 @@ void deleteEnter(char *s);
  * @brief Prompts the user to enter a number to select a function or exit.
  * @param choice Pointer to the variable that stores the input value.
  */
-void inputNumber(int* choice);
+void inputNumber(int *choice);

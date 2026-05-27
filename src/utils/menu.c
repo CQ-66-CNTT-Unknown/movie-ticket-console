@@ -1,6 +1,9 @@
 #include "../../include/utils/menu.h"
+
 #include <stdio.h>
 #include <string.h>
+
+#include "../../include/constanst.h"
 
 // Cross-platform sleep (microseconds)
 #ifdef _WIN32
@@ -17,19 +20,6 @@ static void enable_ansi_colors() {
 static void enable_ansi_colors() {}
 #define sleep_us(us) usleep(us)
 #endif
-
-// ANSI COLOR CODES
-#define RESET "\033[0m"
-#define BOLD "\033[1m"
-#define RED "\033[1;31m"
-#define YELLOW "\033[1;33m"
-#define CYAN "\033[1;36m"
-#define GREEN "\033[1;32m"
-#define MAGENTA "\033[1;35m"
-#define WHITE "\033[1;37m"
-#define DARK_GRAY "\033[0;90m"
-#define BG_RED "\033[41m"
-#define BG_DARK "\033[40m"
 
 // Print each character
 static void typewrite(const char *color, const char *text, int delay_us) {
@@ -52,28 +42,28 @@ static void print_cinema_logo() {
 
     if (!logo_shown) {
         enable_ansi_colors();
-        typewrite(RED, "   ___  _  _  _  _  ___  ___  _____  __   ____  \n", 6000);
-        typewrite(RED, "  / __|| || \\| || || __||_ _||_   _|/  \\ |  _ \\ \n", 6000);
-        typewrite(YELLOW, " | /   | || \\  || || _|  | |   | | / /\\ \\| |_) |\n", 6000);
-        typewrite(YELLOW, " | \\__ | || |\\  || || |__ | |   | |/ /--\\ \\  _ < \n", 6000);
-        typewrite(WHITE, "  \\___||_||_| \\_||_||___||___|  |_/_/    \\_\\_| \\_\\\n", 6000);
+        typewrite(BOLD_RED, "   ___  _  _  _  _  ___  ___  _____  __   ____  \n", 6000);
+        typewrite(BOLD_RED, "  / __|| || \\| || || __||_ _||_   _|/  \\ |  _ \\ \n", 6000);
+        typewrite(BOLD_YELLOW, " | /   | || \\  || || _|  | |   | | / /\\ \\| |_) |\n", 6000);
+        typewrite(BOLD_YELLOW, " | \\__ | || |\\  || || |__ | |   | |/ /--\\ \\  _ < \n", 6000);
+        typewrite(BOLD_WHITE, "  \\___||_||_| \\_||_||___||___|  |_/_/    \\_\\_| \\_\\\n", 6000);
 
         sleep_us(250000);
         typewrite(DARK_GRAY, "\n        *  He Thong Dat Ve Xem Phim Truc Tuyen  *\n", 18000);
 
         sleep_us(150000);
-        typewrite(CYAN, "  ============================================================\n", 3000);
+        typewrite(BOLD_CYAN, "  ============================================================\n", 3000);
 
         logo_shown = 1;
     } else {
 
-        printf(RED "   ___  _  _  _  _  ___  ___  _____  __   ____  \n" RESET);
-        printf(RED "  / __|| || \\| || || __||_ _||_   _|/  \\ |  _ \\ \n" RESET);
-        printf(YELLOW " | /   | || \\  || || _|  | |   | | / /\\ \\| |_) |\n" RESET);
-        printf(YELLOW " | \\__ | || |\\  || || |__ | |   | |/ /--\\ \\  _ < \n" RESET);
-        printf(WHITE "  \\___||_||_| \\_||_||___||___|  |_/_/    \\_\\_| \\_\\\n" RESET);
+        printf(BOLD_RED "   ___  _  _  _  _  ___  ___  _____  __   ____  \n" RESET);
+        printf(BOLD_RED "  / __|| || \\| || || __||_ _||_   _|/  \\ |  _ \\ \n" RESET);
+        printf(BOLD_YELLOW " | /   | || \\  || || _|  | |   | | / /\\ \\| |_) |\n" RESET);
+        printf(BOLD_YELLOW " | \\__ | || |\\  || || |__ | |   | |/ /--\\ \\  _ < \n" RESET);
+        printf(BOLD_WHITE "  \\___||_||_| \\_||_||___||___|  |_/_/    \\_\\_| \\_\\\n" RESET);
         printf(DARK_GRAY "\n        *  He Thong Dat Ve Xem Phim Truc Tuyen  *\n" RESET);
-        printf(CYAN "  ============================================================\n" RESET);
+        printf(BOLD_CYAN "  ============================================================\n" RESET);
     }
     printf("\n");
 }
@@ -81,41 +71,41 @@ static void print_cinema_logo() {
 void show_manager_actions_menu() {
     print_cinema_logo();
 
-    printf(CYAN "  +========================================+\n" RESET);
-    printf(CYAN "  |" YELLOW BOLD "        **QUAN LY HE THONG**               " CYAN "|\n" RESET);
-    printf(CYAN "  +========================================+\n" RESET);
-    printf(CYAN "  |" GREEN "  1  " WHITE "| Xem Danh Sach Phim               " CYAN "|\n" RESET);
-    printf(CYAN "  |" GREEN "  2  " WHITE "| Tim Kiem Phim                    " CYAN "|\n" RESET);
-    printf(CYAN "  |" GREEN "  3  " WHITE "| Them Phim                   " CYAN "|\n" RESET);
-    printf(CYAN "  |" GREEN "  4  " WHITE "| Xoa Phim                         " CYAN "|\n" RESET);
-    printf(CYAN "  |" GREEN "  5  " WHITE "| Sua Phim                         " CYAN "|\n" RESET);
-    printf(CYAN "  |" GREEN "  6  " WHITE "| Xem Suat Chieu                   " CYAN "|\n" RESET);
-    printf(CYAN "  |" GREEN "  7  " WHITE "| Tao Suat Chieu Moi               " CYAN "|\n" RESET);
-    printf(CYAN "  |" GREEN "  8  " WHITE "| Huy Suat Chieu                   " CYAN "|\n" RESET);
-    printf(CYAN "  |" GREEN "  9  " WHITE "| Bao Cao Doanh Thu                " CYAN "|\n" RESET);
-    printf(CYAN "  +----------------------------------------+\n" RESET);
-    printf(CYAN "  |" RED "  0  " WHITE "| Dang Xuat                        " CYAN "|\n" RESET);
-    printf(CYAN "  +========================================+\n" RESET);
-    printf(YELLOW "\n  >> Nhap lua chon cua ban: " RESET);
+    printf(BOLD_CYAN "  +========================================+\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_YELLOW BOLD "        **QUAN LY HE THONG**               " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  +========================================+\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  1  " BOLD_WHITE "| Xem Danh Sach Phim               " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  2  " BOLD_WHITE "| Tim Kiem Phim                    " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  3  " BOLD_WHITE "| Them Phim                   " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  4  " BOLD_WHITE "| Xoa Phim                         " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  5  " BOLD_WHITE "| Sua Phim                         " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  6  " BOLD_WHITE "| Xem Suat Chieu                   " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  7  " BOLD_WHITE "| Tao Suat Chieu Moi               " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  8  " BOLD_WHITE "| Huy Suat Chieu                   " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  9  " BOLD_WHITE "| Bao Cao Doanh Thu                " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  +----------------------------------------+\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_RED "  0  " BOLD_WHITE "| Dang Xuat                        " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  +========================================+\n" RESET);
+    printf(BOLD_YELLOW "\n  >> Nhap lua chon cua ban: " RESET);
 }
 
 void show_customer_actions_menu() {
     print_cinema_logo();
 
-    printf(CYAN "  +========================================+\n" RESET);
-    printf(CYAN "  |" YELLOW BOLD "         ** MENU KHACH HANG **          " CYAN "|\n" RESET);
-    printf(CYAN "  +========================================+\n" RESET);
-    printf(CYAN "  |" GREEN "  1  " WHITE "| Xem Danh Sach Phim               " CYAN "|\n" RESET);
-    printf(CYAN "  |" GREEN "  2  " WHITE "| Tim Kiem Phim                    " CYAN "|\n" RESET);
-    printf(CYAN "  |" GREEN "  3  " WHITE "| Xem Suat Chieu                   " CYAN "|\n" RESET);
-    printf(CYAN "  |" GREEN "  4  " WHITE "| Xem So Do Ghe Ngoi               " CYAN "|\n" RESET);
-    printf(CYAN "  |" MAGENTA "  5  " WHITE "| Dat Ve Xem Phim                  " CYAN "|\n" RESET);
-    printf(CYAN "  |" MAGENTA "  6  " WHITE "| Huy Ve Da Mua                    " CYAN "|\n" RESET);
-    printf(CYAN "  |" MAGENTA "  7  " WHITE "| Lich Su Mua Ve                   " CYAN "|\n" RESET);
-    printf(CYAN "  +----------------------------------------+\n" RESET);
-    printf(CYAN "  |" RED "  0  " WHITE "| Dang Xuat                        " CYAN "|\n" RESET);
-    printf(CYAN "  +========================================+\n" RESET);
-    printf(YELLOW "\n  >> Nhap lua chon cua ban: " RESET);
+    printf(BOLD_CYAN "  +========================================+\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_YELLOW BOLD "         ** MENU KHACH HANG **          " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  +========================================+\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  1  " BOLD_WHITE "| Xem Danh Sach Phim               " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  2  " BOLD_WHITE "| Tim Kiem Phim                    " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  3  " BOLD_WHITE "| Xem Suat Chieu                   " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  4  " BOLD_WHITE "| Xem So Do Ghe Ngoi               " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_MAGENTA "  5  " BOLD_WHITE "| Dat Ve Xem Phim                  " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_MAGENTA "  6  " BOLD_WHITE "| Huy Ve Da Mua                    " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_MAGENTA "  7  " BOLD_WHITE "| Lich Su Mua Ve                   " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  +----------------------------------------+\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_RED "  0  " BOLD_WHITE "| Dang Xuat                        " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  +========================================+\n" RESET);
+    printf(BOLD_YELLOW "\n  >> Nhap lua chon cua ban: " RESET);
 }
 
 void show_actions_menu(UserRole role) {

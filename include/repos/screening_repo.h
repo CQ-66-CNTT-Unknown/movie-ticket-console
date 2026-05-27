@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../models/screening.h"
-
 #include <stdbool.h>
 #include <stdio.h>
+
+#include "../models/screening.h"
 
 /**
  * @brief Get all screenings from the system

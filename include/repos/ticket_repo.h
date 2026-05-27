@@ -1,8 +1,9 @@
 #pragma once
 
+#include <stdio.h>
+
 #include "../models/ticket.h"
 
-#include <stdio.h>
 
 /**
  * @brief Retrieves all tickets from the specified source

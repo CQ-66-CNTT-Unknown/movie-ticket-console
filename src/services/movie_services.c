@@ -1,15 +1,16 @@
 #include "../../include/services/movie_services.h"
-#include "../../include/constanst.h"
-#include "../../include/repos/movie_repo.h"
-#include "../../include/repos/screening_repo.h"
-#include "../../include/utils/decision_utils.h"
-#include "../../include/utils/input_utils.h"
 
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../../include/constanst.h"
+#include "../../include/repos/movie_repo.h"
+#include "../../include/repos/screening_repo.h"
+#include "../../include/utils/decision_utils.h"
+#include "../../include/utils/input_utils.h"
 
 /**
  * @brief Prints the details of a movie to the console
@@ -210,7 +211,7 @@ void edit_movie() {
 
     // Find the movie
     Movie *found_movie = NULL;
-    
+
     for (int i = 0; i < movie_array->count; i++) {
         if (movie_array->movies[i].movie_id == movie_id) {
             found_movie = &movie_array->movies[i];
