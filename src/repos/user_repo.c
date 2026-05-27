@@ -10,7 +10,7 @@
 User *get_user_by_credentials(const char *username, const char *password, const char *user_source_path) {
     FILE *user_source = fopen(user_source_path, "r");
     if (user_source == NULL) {
-        fprintf(stderr, "Error opening user source file: %s\n", user_source_path);
+        fprintf(stderr, "Khong the mo tep nguon nguoi dung: %s\n", user_source_path);
         return NULL;
     }
 
@@ -30,7 +30,7 @@ User *get_user_by_credentials(const char *username, const char *password, const 
             if (strcmp(fields[2], password) == 0) {
                 found_user = (User *) malloc(sizeof(User));
                 if (found_user == NULL) {
-                    fprintf(stderr, "Memory allocation failed for user\n");
+                    fprintf(stderr, "Khong the cap phat bo nho cho nguoi dung\n");
                     fclose(user_source);
                     return NULL;
                 }
@@ -53,7 +53,7 @@ User *get_user_by_credentials(const char *username, const char *password, const 
 User *get_user_by_id(int user_id, const char *user_source_path) {
     FILE *user_source = fopen(user_source_path, "r");
     if (user_source == NULL) {
-        fprintf(stderr, "Error opening user source file: %s\n", user_source_path);
+        fprintf(stderr, "Khong the mo tep nguon nguoi dung: %s\n", user_source_path);
         return NULL;
     }
 
@@ -70,7 +70,7 @@ User *get_user_by_id(int user_id, const char *user_source_path) {
         if (atoi(fields[0]) == user_id) {
             found_user = (User *) malloc(sizeof(User));
             if (found_user == NULL) {
-                fprintf(stderr, "Memory allocation failed for user\n");
+                fprintf(stderr, "Khong the cap phat bo nho cho nguoi dung\n");
                 fclose(user_source);
                 return NULL;
             }

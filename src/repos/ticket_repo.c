@@ -11,13 +11,13 @@
 TicketArray *get_all_tickets(const char *ticket_source_path) {
     FILE *ticket_source = fopen(ticket_source_path, "r");
     if (ticket_source == NULL) {
-        fprintf(stderr, "Error opening ticket source file: %s\n", ticket_source_path);
+        fprintf(stderr, "Khong the mo tep nguon ve: %s\n", ticket_source_path);
         return NULL;
     }
 
     TicketArray *ticket_array = (TicketArray *) malloc(sizeof(TicketArray));
     if (ticket_array == NULL) {
-        fprintf(stderr, "Memory allocation failed for loading tickets\n");
+        fprintf(stderr, "Khong the cap phat bo nho cho danh sach ve\n");
         fclose(ticket_source);
         return NULL;
     }
@@ -39,7 +39,7 @@ TicketArray *get_all_tickets(const char *ticket_source_path) {
             Ticket *new_tickets = (Ticket *) realloc(ticket_array->tickets, new_capacity * sizeof(Ticket));
 
             if (new_tickets == NULL) {
-                fprintf(stderr, "Memory allocation failed for loading tickets\n");
+                fprintf(stderr, "Khong the cap phat bo nho cho danh sach ve\n");
                 free(ticket_array->tickets);
                 fclose(ticket_source);
                 free(ticket_array);
@@ -69,7 +69,7 @@ TicketArray *get_all_tickets(const char *ticket_source_path) {
 void delete_ticket_record_by_screening_id(int screening_id, const char *ticket_source_path) {
     FILE *ticket_source = fopen(ticket_source_path, "r");
     if (ticket_source == NULL) {
-        fprintf(stderr, "Failed to open ticket source file: %s\n", ticket_source_path);
+        fprintf(stderr, "Khong the mo tep nguon ve: %s\n", ticket_source_path);
         return;
     }
 
@@ -77,7 +77,7 @@ void delete_ticket_record_by_screening_id(int screening_id, const char *ticket_s
 
     FILE *temp_file = fopen(temp_path, "w");
     if (temp_file == NULL) {
-        fprintf(stderr, "Failed to create temporary file for ticket deletion\n");
+        fprintf(stderr, "Khong the tao tep tam cho xoa ve\n");
         fclose(ticket_source);
         free(temp_path);
         return;
@@ -111,14 +111,14 @@ void delete_ticket_record_by_screening_id(int screening_id, const char *ticket_s
 void delete_ticket_by_id(int ticket_id, const char *ticket_source_path) {
     FILE *ticket_source = fopen(ticket_source_path, "r");
     if (ticket_source == NULL) {
-        fprintf(stderr, "Failed to open ticket source file: %s\n", ticket_source_path);
+        fprintf(stderr, "Khong the mo tep nguon ve: %s\n", ticket_source_path);
         return;
     }
 
     char *temp_path = get_temp_file_path(ticket_source_path);
     FILE *temp_file = fopen(temp_path, "w");
     if (temp_file == NULL) {
-        fprintf(stderr, "Failed to create temporary file for ticket deletion\n");
+        fprintf(stderr, "Khong the tao tep tam cho xoa ve\n");
         fclose(ticket_source);
         free(temp_path);
         return;

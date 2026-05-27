@@ -106,18 +106,18 @@ void show_revenue_report() {
     TicketArray *tickets_array = get_all_tickets(TICKET_SOURCE_PATH);
 
     if (tickets_array == NULL) {
-        fprintf(stderr, "Failed to load ticket data.\n");
+        fprintf(stderr, "Khong the tai du lieu ve.\n");
         return;
     }
 
     if (screenings_array == NULL) {
-        fprintf(stderr, "Failed to load screening data.\n");
+        fprintf(stderr, "Khong the tai du lieu chieu phim.\n");
         free(tickets_array);
         return;
     }
 
     if (movies_array == NULL) {
-        fprintf(stderr, "Failed to load movie data.\n");
+        fprintf(stderr, "Khong the tai du lieu phim.\n");
         free(tickets_array);
         free(screenings_array);
         return;
@@ -125,7 +125,7 @@ void show_revenue_report() {
 
     MovieStats *stats = (MovieStats *) malloc(movies_array->count * sizeof(MovieStats));
     if (stats == NULL) {
-        fprintf(stderr, "Failed to allocate memory for movie statistics.\n");
+        fprintf(stderr, "Khong the cap phat bo nho cho thong tin phim.\n");
         return;
     }
 

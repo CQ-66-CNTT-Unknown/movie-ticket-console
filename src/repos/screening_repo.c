@@ -12,13 +12,13 @@
 ScreeningArray *get_all_screenings(const char *screening_source_path) {
     FILE *screening_source = fopen(screening_source_path, "r");
     if (screening_source == NULL) {
-        fprintf(stderr, "Error opening screening source file: %s\n", screening_source_path);
+        fprintf(stderr, "Khong the mo tep nguon chieu phim: %s\n", screening_source_path);
         return NULL;
     }
 
     ScreeningArray *screening_array = (ScreeningArray *) malloc(sizeof(ScreeningArray));
     if (screening_array == NULL) {
-        fprintf(stderr, "Memory allocation failed for loading screenings\n");
+        fprintf(stderr, "Khong the cap phat bo nho cho danh sach chieu phim\n");
         fclose(screening_source);
         return NULL;
     }
@@ -41,7 +41,7 @@ ScreeningArray *get_all_screenings(const char *screening_source_path) {
                     (Screening *) realloc(screening_array->screenings, new_capacity * sizeof(Screening));
 
             if (new_screenings == NULL) {
-                fprintf(stderr, "Memory allocation failed for loading screenings\n");
+                fprintf(stderr, "Khong the cap phat bo nho cho danh sach chieu phim\n");
                 free(screening_array->screenings);
                 fclose(screening_source);
                 free(screening_array);
@@ -70,7 +70,7 @@ ScreeningArray *get_all_screenings(const char *screening_source_path) {
 bool is_movie_scheduled(int target_movie_id, const char *screening_source_path) {
     FILE *screening_source = fopen(screening_source_path, "r");
     if (screening_source == NULL) {
-        fprintf(stderr, "Error opening screening source file: %s\n", screening_source_path);
+        fprintf(stderr, "Khong the mo tep nguon chieu phim: %s\n", screening_source_path);
         return false;
     }
 
@@ -96,7 +96,7 @@ bool is_movie_scheduled(int target_movie_id, const char *screening_source_path) 
 Screening *delete_screening_record(int screening_id, const char *screening_source_path) {
     FILE *screening_source = fopen(screening_source_path, "r");
     if (screening_source == NULL) {
-        fprintf(stderr, "Failed to open screening source file: %s\n", screening_source_path);
+        fprintf(stderr, "Khong the mo tep nguon chieu phim: %s\n", screening_source_path);
         return NULL;
     }
 
@@ -104,7 +104,7 @@ Screening *delete_screening_record(int screening_id, const char *screening_sourc
 
     FILE *temp_file = fopen(temp_path, "w");
     if (temp_file == NULL) {
-        fprintf(stderr, "Failed to create temporary file for screening deletion\n");
+        fprintf(stderr, "Khong the tao tep tam cho xoa chieu phim\n");
         fclose(screening_source);
         free(temp_path);
         return NULL;
@@ -128,7 +128,7 @@ Screening *delete_screening_record(int screening_id, const char *screening_sourc
         } else {
             deleted_screening = (Screening *) malloc(sizeof(Screening));
             if (deleted_screening == NULL) {
-                fprintf(stderr, "Memory allocation failed for deleted screening record\n");
+                fprintf(stderr, "Khong the cap phat bo nho cho ban ghi chieu phim da xoa\n");
                 fclose(screening_source);
                 fclose(temp_file);
                 return NULL;
@@ -145,13 +145,12 @@ Screening *delete_screening_record(int screening_id, const char *screening_sourc
     fclose(temp_file);
 
     if (remove(screening_source_path) != 0) {
-        fprintf(stderr, "Failed to delete original screening source file: %s\n", screening_source_path);
+        fprintf(stderr, "Khong the xoa tep nguon chieu phim goc: %s\n", screening_source_path);
         return NULL;
     }
 
     if (rename(temp_path, screening_source_path) != 0) {
-        fprintf(stderr, "Failed to rename temporary file to original screening source file: %s\n",
-                screening_source_path);
+        fprintf(stderr, "Khong the doi ten tep tam thanh tep nguon chieu phim goc: %s\n", screening_source_path);
         return NULL;
     }
 

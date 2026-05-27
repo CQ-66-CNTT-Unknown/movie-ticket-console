@@ -26,7 +26,7 @@ void display_all_movies() {
     MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
 
     if (movie_array == NULL) {
-        fprintf(stderr, "Failed to load movie data.\n");
+        fprintf(stderr, "Khong the tai du lieu phim.\n");
         return;
     }
 
@@ -89,7 +89,7 @@ void search_movie_by_name() {
     MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
 
     if (movie_array == NULL) {
-        fprintf(stderr, "Failed to load movie data.\n");
+        fprintf(stderr, "Khong the tai du lieu phim.\n");
         return;
     }
 
@@ -133,7 +133,7 @@ void add_movie() {
     MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
 
     if (movie_array == NULL) {
-        fprintf(stderr, "Failed to load movie data.\n");
+        fprintf(stderr, "Khong the tai du lieu phim.\n");
         return;
     }
 
@@ -175,7 +175,7 @@ void add_movie() {
     // Write to CSV file
     FILE *movie_file = fopen(MOVIE_SOURCE_PATH, "a");
     if (movie_file == NULL) {
-        fprintf(stderr, "Failed to open movie file for writing.\n");
+        fprintf(stderr, "Khong the mo tep phim de ghi.\n");
         free(movie_array->movies);
         free(movie_array);
         return;
@@ -204,7 +204,7 @@ void edit_movie() {
     MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
 
     if (movie_array == NULL) {
-        fprintf(stderr, "Failed to load movie data.\n");
+        fprintf(stderr, "Khong the tai du lieu phim.\n");
         return;
     }
 
@@ -219,7 +219,7 @@ void edit_movie() {
     }
 
     if (found_movie == NULL) {
-        printf("Movie with ID %d not found!\n", movie_id);
+        printf("Phim voi ID %d khong ton tai!\n", movie_id);
         free(movie_array->movies);
         free(movie_array);
         return;
@@ -280,7 +280,7 @@ void edit_movie() {
     // Write all movies back to file
     FILE *movie_file = fopen(MOVIE_SOURCE_PATH, "w");
     if (movie_file == NULL) {
-        fprintf(stderr, "Failed to open movie file for writing.\n");
+        fprintf(stderr, "Khong the mo tep phim de ghi.\n");
         free(movie_array->movies);
         free(movie_array);
         return;
@@ -296,7 +296,7 @@ void edit_movie() {
     }
 
     fclose(movie_file);
-    printf("\nMovie updated successfully!\n");
+    printf("\nPhim da duoc cap nhat thanh cong!\n");
     print_movie_details(found_movie);
 
     free(movie_array->movies);
