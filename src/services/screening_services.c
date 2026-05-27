@@ -60,18 +60,18 @@ void view_screenings() {
     ScreeningArray *screening_array = get_all_screenings(SCREENING_SOURCE_PATH);
 
     if (screening_array == NULL) {
-        fprintf(stderr, "Failed to load screening data.\n");
+        fprintf(stderr, "Khong the tai du lieu chieu phim.\n");
         return;
     }
 
     if (movie_array == NULL) {
-        fprintf(stderr, "Failed to load movie data.\n");
+        fprintf(stderr, "Khong the tai du lieu phim.\n");
         free(screening_array);
         return;
     }
 
     if (screening_array->count == 0) {
-        fprintf(stderr, "No screenings available.\n");
+        fprintf(stderr, "Khong co lich chieu nao.\n");
         free(screening_array);
         free(movie_array);
         return;
@@ -86,7 +86,7 @@ void view_screenings() {
         if (associated_movie != NULL) {
             print_screening_info(current_screening, associated_movie);
         } else {
-            fprintf(stderr, "Warning: Movie with ID %d not found for screening ID %d\n", current_screening->movie_id,
+            fprintf(stderr, "Canh bao: Phim voi ID %d khong ton tai cho lich chieu ID %d\n", current_screening->movie_id,
                     current_screening->screening_id);
         }
     }
@@ -106,7 +106,7 @@ void show_seat_map() {
     TicketArray *ticket_array = get_all_tickets(TICKET_SOURCE_PATH);
 
     if (ticket_array == NULL) {
-        fprintf(stderr, "Failed to load ticket data.\n");
+        fprintf(stderr, "Khong the tai du lieu ve.\n");
         return;
     }
 
@@ -168,7 +168,7 @@ void create_screening() {
     MovieArray *movie_array = get_all_movies(MOVIE_SOURCE_PATH);
 
     if (movie_array == NULL) {
-        fprintf(stderr, "Failed to load movie data.\n");
+        fprintf(stderr, "Khong the tai du lieu phim.\n");
         return;
     }
 
@@ -182,7 +182,7 @@ void create_screening() {
     }
 
     if (found_movie == NULL) {
-        fprintf(stderr, "Movie with ID %d not found.\n", movie_id);
+        fprintf(stderr, "Phim voi ID %d khong ton tai.\n", movie_id);
         free(movie_array->movies);
         free(movie_array);
         return;
@@ -219,7 +219,7 @@ void create_screening() {
 
     time_t start_time = mktime(&time_struct);
     if (start_time == (time_t) -1) {
-        fprintf(stderr, "Invalid date/time format.\n");
+        fprintf(stderr, "Dinh dang ngay/gio khong hop le.\n");
         free(movie_array->movies);
         free(movie_array);
         return;
@@ -227,7 +227,7 @@ void create_screening() {
 
     double price = input_id("Enter ticket price (VND): ", 50);
     if (price < 0) {
-        fprintf(stderr, "Invalid price.\n");
+        fprintf(stderr, "Gia ve khong hop le.\n");
         free(movie_array->movies);
         free(movie_array);
         return;
@@ -235,7 +235,7 @@ void create_screening() {
 
     int room_number = input_id("Enter room number: ", 50);
     if (room_number < 0) {
-        fprintf(stderr, "Invalid room number.\n");
+        fprintf(stderr, "So phong khong hop le.\n");
         free(movie_array->movies);
         free(movie_array);
         return;
@@ -244,7 +244,7 @@ void create_screening() {
     // Write to CSV file
     FILE *screening_file = fopen(SCREENING_SOURCE_PATH, "a");
     if (screening_file == NULL) {
-        fprintf(stderr, "Failed to open screening file for writing.\n");
+        fprintf(stderr, "Khong the mo tep lich chieu de ghi.\n");
         free(movie_array->movies);
         free(movie_array);
         return;
@@ -309,12 +309,12 @@ Screening choose_screening(Screening *a) {
     ScreeningArray *screening_array = get_all_screenings(SCREENING_SOURCE_PATH);
 
     if (screening_array == NULL) {
-        fprintf(stderr, "Failed to load screening data.\n");
+        fprintf(stderr, "Khong the tai du lieu lich chieu.\n");
         return (Screening){-1, -1, 0, 0, -1};
     }
 
     if (movie_array == NULL) {
-        fprintf(stderr, "Failed to load movie data.\n");
+        fprintf(stderr, "Khong the tai du lieu phim.\n");
         free(screening_array->screenings);
         free(screening_array);
         return (Screening){-1, -1, 0, 0, -1};
@@ -339,7 +339,7 @@ Screening choose_screening(Screening *a) {
         if (associated_movie != NULL) {
             print_screening_info(current_screening, associated_movie);
         } else {
-            fprintf(stderr, "Warning: Movie with ID %d not found for screening ID %d\n", current_screening->movie_id,
+            fprintf(stderr, "Canh bao: Phim voi ID %d khong ton tai cho lich chieu ID %d\n", current_screening->movie_id,
                     current_screening->screening_id);
         }
     }

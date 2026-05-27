@@ -10,13 +10,13 @@
 MovieArray *get_all_movies(const char *movie_source_path) {
     MovieArray *movie_array = (MovieArray *) malloc(sizeof(MovieArray));
     if (movie_array == NULL) {
-        fprintf(stderr, "Memory allocation failed for MovieArray\n");
+        fprintf(stderr, "Khong the cap phat bo nho cho MovieArray\n");
         return NULL;
     }
 
     FILE *movie_source = fopen(movie_source_path, "r");
     if (movie_source == NULL) {
-        fprintf(stderr, "Failed to open movie source file: %s\n", movie_source_path);
+        fprintf(stderr, "Khong the mo tep nguon phim: %s\n", movie_source_path);
         free(movie_array);
         return NULL;
     }
@@ -38,7 +38,7 @@ MovieArray *get_all_movies(const char *movie_source_path) {
             Movie *new_movies = (Movie *) realloc(movie_array->movies, new_capacity * sizeof(Movie));
 
             if (new_movies == NULL) {
-                fprintf(stderr, "Memory allocation failed for loading movies\n");
+                fprintf(stderr, "Khong the cap phat bo nho cho danh sach phim\n");
                 free(movie_array->movies);
                 free(movie_array);
                 fclose(movie_source);
@@ -68,7 +68,7 @@ MovieArray *get_all_movies(const char *movie_source_path) {
 Movie *delete_movie_record(int movie_id, const char *movie_source_path) {
     FILE *movie_source = fopen(movie_source_path, "r");
     if (movie_source == NULL) {
-        fprintf(stderr, "Failed to open movie source file: %s\n", movie_source_path);
+        fprintf(stderr, "Khong the mo tep nguon phim: %s\n", movie_source_path);
         return NULL;
     }
 
@@ -91,7 +91,7 @@ Movie *delete_movie_record(int movie_id, const char *movie_source_path) {
 
     FILE *temp_file = fopen(temp_file_path, "w");
     if (temp_file == NULL) {
-        fprintf(stderr, "Failed to create temporary file for movie deletion\n");
+        fprintf(stderr, "Khong the tao tep tam cho xoa phim\n");
         fclose(movie_source);
         return NULL;
     }
@@ -114,7 +114,7 @@ Movie *delete_movie_record(int movie_id, const char *movie_source_path) {
         } else {
             deleted_movie = (Movie *) malloc(sizeof(Movie));
             if (deleted_movie == NULL) {
-                fprintf(stderr, "Memory allocation failed for deleted movie record\n");
+                fprintf(stderr, "Khong the cap phat bo nho cho ban ghi phim da xoa\n");
                 fclose(movie_source);
                 fclose(temp_file);
                 return NULL;
@@ -130,12 +130,12 @@ Movie *delete_movie_record(int movie_id, const char *movie_source_path) {
     fclose(temp_file);
 
     if (remove(movie_source_path) != 0) {
-        fprintf(stderr, "Failed to delete original movie source file: %s\n", movie_source_path);
+        fprintf(stderr, "Khong the xoa tep nguon phim goc: %s\n", movie_source_path);
         return NULL;
     }
 
     if (rename(temp_file_path, movie_source_path) != 0) {
-        fprintf(stderr, "Failed to rename temporary file to original movie source file: %s\n", movie_source_path);
+        fprintf(stderr, "Khong the doi ten tep tam thanh tep nguon phim goc: %s\n", movie_source_path);
         return NULL;
     }
 
