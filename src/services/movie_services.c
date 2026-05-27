@@ -182,7 +182,7 @@ void add_movie() {
         return;
     }
 
-    fprintf(movie_file, "%d,%s,%d\n", new_movie_id, title, duration);
+    fprintf(movie_file, "\n%d,%s,%d\n", new_movie_id, title, duration);
     fclose(movie_file);
 
     printf("\nPhim da duoc them thanh cong!\n");
