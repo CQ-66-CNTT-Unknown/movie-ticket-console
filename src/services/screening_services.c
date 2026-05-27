@@ -1,4 +1,11 @@
 #include "../../include/services/screening_services.h"
+
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
 #include "../../include/constanst.h"
 #include "../../include/models/movie.h"
 #include "../../include/models/screening.h"
@@ -9,12 +16,6 @@
 #include "../../include/utils/csv_utils.h"
 #include "../../include/utils/decision_utils.h"
 #include "../../include/utils/input_utils.h"
-
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
 
 /**
  * @brief Print the header of the screening table
@@ -86,8 +87,8 @@ void view_screenings() {
         if (associated_movie != NULL) {
             print_screening_info(current_screening, associated_movie);
         } else {
-            fprintf(stderr, "Canh bao: Phim voi ID %d khong ton tai cho lich chieu ID %d\n", current_screening->movie_id,
-                    current_screening->screening_id);
+            fprintf(stderr, "Canh bao: Phim voi ID %d khong ton tai cho lich chieu ID %d\n",
+                    current_screening->movie_id, current_screening->screening_id);
         }
     }
 
@@ -310,14 +311,14 @@ Screening choose_screening(Screening *a) {
 
     if (screening_array == NULL) {
         fprintf(stderr, "Khong the tai du lieu lich chieu.\n");
-        return (Screening){-1, -1, 0, 0, -1};
+        return (Screening) {-1, -1, 0, 0, -1};
     }
 
     if (movie_array == NULL) {
         fprintf(stderr, "Khong the tai du lieu phim.\n");
         free(screening_array->screenings);
         free(screening_array);
-        return (Screening){-1, -1, 0, 0, -1};
+        return (Screening) {-1, -1, 0, 0, -1};
     }
 
     if (screening_array->count == 0) {
@@ -326,7 +327,7 @@ Screening choose_screening(Screening *a) {
         free(screening_array);
         free(movie_array->movies);
         free(movie_array);
-        return (Screening){-1, -1, 0, 0, -1};
+        return (Screening) {-1, -1, 0, 0, -1};
     }
 
     printf("\n===== CHON LICH CHIEU =====\n");
@@ -339,8 +340,8 @@ Screening choose_screening(Screening *a) {
         if (associated_movie != NULL) {
             print_screening_info(current_screening, associated_movie);
         } else {
-            fprintf(stderr, "Canh bao: Phim voi ID %d khong ton tai cho lich chieu ID %d\n", current_screening->movie_id,
-                    current_screening->screening_id);
+            fprintf(stderr, "Canh bao: Phim voi ID %d khong ton tai cho lich chieu ID %d\n",
+                    current_screening->movie_id, current_screening->screening_id);
         }
     }
 
@@ -355,20 +356,20 @@ Screening choose_screening(Screening *a) {
         free(screening_array);
         free(movie_array->movies);
         free(movie_array);
-        return (Screening){-1, -1, 0, 0, -1};
+        return (Screening) {-1, -1, 0, 0, -1};
     }
 
     // Find the screening with the selected ID
     for (int i = 0; i < screening_array->count; i++) {
         if (screening_array->screenings[i].screening_id == choice) {
             *a = screening_array->screenings[i];
-            
+
             // Find and print the movie title
             Movie *associated_movie = find_movie_by_id(movie_array, a->movie_id);
             if (associated_movie != NULL) {
                 printf("\nSuat chieu duoc chon: %d - %s\n", a->screening_id, associated_movie->title);
             }
-            
+
             free(screening_array->screenings);
             free(screening_array);
             free(movie_array->movies);
@@ -382,5 +383,5 @@ Screening choose_screening(Screening *a) {
     free(screening_array);
     free(movie_array->movies);
     free(movie_array);
-    return (Screening){-1, -1, 0, 0, -1};
+    return (Screening) {-1, -1, 0, 0, -1};
 }

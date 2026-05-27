@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../models/movie.h"
-
 #include <stdio.h>
+
+#include "../models/movie.h"
 
 /**
  * @brief Get all movies from the system

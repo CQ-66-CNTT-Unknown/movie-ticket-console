@@ -1,11 +1,11 @@
 #include "../../include/repos/user_repo.h"
-#include "../../include/constanst.h"
-#include "../../include/utils/csv_utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "../../include/constanst.h"
+#include "../../include/utils/csv_utils.h"
 
 User *get_user_by_credentials(const char *username, const char *password, const char *user_source_path) {
     FILE *user_source = fopen(user_source_path, "r");
@@ -16,7 +16,7 @@ User *get_user_by_credentials(const char *username, const char *password, const 
 
     User *found_user = NULL;
     char buffer[LINE_DATA_BUFFER_SIZE];
-    
+
     fgets(buffer, sizeof(buffer), user_source); // Skip header line
 
     while (fgets(buffer, sizeof(buffer), user_source)) {
@@ -59,7 +59,7 @@ User *get_user_by_id(int user_id, const char *user_source_path) {
 
     User *found_user = NULL;
     char buffer[LINE_DATA_BUFFER_SIZE];
-    
+
     fgets(buffer, sizeof(buffer), user_source); // Skip header line
 
     while (fgets(buffer, sizeof(buffer), user_source)) {

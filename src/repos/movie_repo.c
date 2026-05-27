@@ -1,11 +1,12 @@
 #include "../../include/repos/movie_repo.h"
-#include "../../include/constanst.h"
-#include "../../include/utils/csv_utils.h"
 
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../../include/constanst.h"
+#include "../../include/utils/csv_utils.h"
 
 MovieArray *get_all_movies(const char *movie_source_path) {
     MovieArray *movie_array = (MovieArray *) malloc(sizeof(MovieArray));

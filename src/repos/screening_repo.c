@@ -1,13 +1,14 @@
 #include "../../include/repos/screening_repo.h"
-#include "../../include/constanst.h"
-#include "../../include/utils/csv_utils.h"
-#include "../../include/utils/get_temp_file_path.h"
 
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../../include/constanst.h"
+#include "../../include/utils/csv_utils.h"
+#include "../../include/utils/get_temp_file_path.h"
 
 ScreeningArray *get_all_screenings(const char *screening_source_path) {
     FILE *screening_source = fopen(screening_source_path, "r");

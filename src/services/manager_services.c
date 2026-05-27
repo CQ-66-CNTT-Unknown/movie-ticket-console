@@ -1,12 +1,13 @@
 #include "../../include/services/manager_services.h"
-#include "../../include/constanst.h"
-#include "../../include/repos/movie_repo.h"
-#include "../../include/repos/screening_repo.h"
-#include "../../include/repos/ticket_repo.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../../include/constanst.h"
+#include "../../include/repos/movie_repo.h"
+#include "../../include/repos/screening_repo.h"
+#include "../../include/repos/ticket_repo.h"
 
 /**
  * @brief MovieStats structure representing the statistics of a movie
