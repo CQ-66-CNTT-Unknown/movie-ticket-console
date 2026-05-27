@@ -72,11 +72,11 @@ void show_manager_actions_menu() {
     print_cinema_logo();
 
     printf(BOLD_CYAN "  +========================================+\n" RESET);
-    printf(BOLD_CYAN "  |" BOLD_YELLOW BOLD "        **QUAN LY HE THONG**               " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_YELLOW "        **QUAN LY HE THONG**            " BOLD_CYAN "|\n" RESET);
     printf(BOLD_CYAN "  +========================================+\n" RESET);
     printf(BOLD_CYAN "  |" BOLD_GREEN "  1  " BOLD_WHITE "| Xem Danh Sach Phim               " BOLD_CYAN "|\n" RESET);
     printf(BOLD_CYAN "  |" BOLD_GREEN "  2  " BOLD_WHITE "| Tim Kiem Phim                    " BOLD_CYAN "|\n" RESET);
-    printf(BOLD_CYAN "  |" BOLD_GREEN "  3  " BOLD_WHITE "| Them Phim                   " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_GREEN "  3  " BOLD_WHITE "| Them Phim                        " BOLD_CYAN "|\n" RESET);
     printf(BOLD_CYAN "  |" BOLD_GREEN "  4  " BOLD_WHITE "| Xoa Phim                         " BOLD_CYAN "|\n" RESET);
     printf(BOLD_CYAN "  |" BOLD_GREEN "  5  " BOLD_WHITE "| Sua Phim                         " BOLD_CYAN "|\n" RESET);
     printf(BOLD_CYAN "  |" BOLD_GREEN "  6  " BOLD_WHITE "| Xem Suat Chieu                   " BOLD_CYAN "|\n" RESET);
@@ -93,7 +93,7 @@ void show_customer_actions_menu() {
     print_cinema_logo();
 
     printf(BOLD_CYAN "  +========================================+\n" RESET);
-    printf(BOLD_CYAN "  |" BOLD_YELLOW BOLD "         ** MENU KHACH HANG **          " BOLD_CYAN "|\n" RESET);
+    printf(BOLD_CYAN "  |" BOLD_YELLOW "         ** MENU KHACH HANG **          " BOLD_CYAN "|\n" RESET);
     printf(BOLD_CYAN "  +========================================+\n" RESET);
     printf(BOLD_CYAN "  |" BOLD_GREEN "  1  " BOLD_WHITE "| Xem Danh Sach Phim               " BOLD_CYAN "|\n" RESET);
     printf(BOLD_CYAN "  |" BOLD_GREEN "  2  " BOLD_WHITE "| Tim Kiem Phim                    " BOLD_CYAN "|\n" RESET);
