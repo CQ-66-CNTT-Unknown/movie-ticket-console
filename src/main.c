@@ -71,10 +71,10 @@ int main() {
                     add_movie();
                     break;
                 case 4:
-                    edit_movie();
+                    delete_movie();
                     break;
                 case 5:
-                    delete_movie();
+                    edit_movie();
                     break;
                 case 6:
                     view_screenings();

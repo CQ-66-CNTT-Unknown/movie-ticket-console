@@ -295,7 +295,6 @@ void cancel_screening() {
 
     Screening *deleted_screening = delete_screening_record(screening_id, SCREENING_SOURCE_PATH);
 
-
     if (deleted_screening != NULL) {
         printf("Lich chieu da duoc huy thanh cong!\n");
         print_screening_details(deleted_screening);
