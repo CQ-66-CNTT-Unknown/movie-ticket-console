@@ -182,7 +182,7 @@ void add_movie() {
         return;
     }
 
-    fprintf(movie_file, "\n%d,%s,%d\n", new_movie_id, title, duration);
+    fprintf(movie_file, "\n%d,%s,%d", new_movie_id, title, duration);
     fclose(movie_file);
 
     printf("\nPhim da duoc them thanh cong!\n");
@@ -198,7 +198,7 @@ void edit_movie() {
     int movie_id = input_id("Nhap ID cua phim ban muon chinh sua: ", 50);
 
     if (movie_id == -1) {
-        printf("The ID is invalid!\n");
+        printf("ID phim khong hop le!\n");
         return;
     }
 
