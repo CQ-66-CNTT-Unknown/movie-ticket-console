@@ -1,9 +1,10 @@
 #include "../../include/utils/get_temp_file_path.h"
-#include "../../include/constanst.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../../include/constanst.h"
 
 char *get_temp_file_path(const char *original_path) {
     if (original_path == NULL)
