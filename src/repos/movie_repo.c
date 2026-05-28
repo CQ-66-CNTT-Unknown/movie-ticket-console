@@ -7,6 +7,7 @@
 
 #include "../../include/constanst.h"
 #include "../../include/utils/csv_utils.h"
+#include "../../include/utils/get_temp_file_path.h"
 
 MovieArray *get_all_movies(const char *movie_source_path) {
     MovieArray *movie_array = (MovieArray *) malloc(sizeof(MovieArray));
@@ -19,6 +20,7 @@ MovieArray *get_all_movies(const char *movie_source_path) {
     if (movie_source == NULL) {
         fprintf(stderr, "Khong the mo tep nguon phim: %s\n", movie_source_path);
         free(movie_array);
+        fclose(movie_source);
         return NULL;
     }
 
@@ -62,6 +64,7 @@ MovieArray *get_all_movies(const char *movie_source_path) {
         movie_array->count++;
     }
 
+    fclose(movie_source);
     return movie_array;
 }
 
@@ -73,27 +76,13 @@ Movie *delete_movie_record(int movie_id, const char *movie_source_path) {
         return NULL;
     }
 
-    char *last_slash = strrchr(movie_source_path, '/');
-#ifdef _WIN32
-    if (last_slash == NULL)
-        last_slash = strrchr(movie_source_path, '\\');
-#endif
-
-    char temp_file_path[256];
-    if (last_slash != NULL) {
-        size_t dir_length = last_slash - movie_source_path + 1;
-        strncpy(temp_file_path, movie_source_path, dir_length);
-        temp_file_path[dir_length] = '\0';
-        strcat(temp_file_path, "temp_movie.csv");
-    } else {
-        strncpy(temp_file_path, "temp_movie.csv", sizeof(temp_file_path) - 1);
-        temp_file_path[sizeof(temp_file_path) - 1] = '\0';
-    }
+    char *temp_file_path = get_temp_file_path(movie_source_path);
 
     FILE *temp_file = fopen(temp_file_path, "w");
     if (temp_file == NULL) {
         fprintf(stderr, "Khong the tao tep tam cho xoa phim\n");
         fclose(movie_source);
+        free(temp_file_path);
         return NULL;
     }
 
@@ -132,13 +121,16 @@ Movie *delete_movie_record(int movie_id, const char *movie_source_path) {
 
     if (remove(movie_source_path) != 0) {
         fprintf(stderr, "Khong the xoa tep nguon phim goc: %s\n", movie_source_path);
+        free(temp_file_path);
         return NULL;
     }
 
     if (rename(temp_file_path, movie_source_path) != 0) {
         fprintf(stderr, "Khong the doi ten tep tam thanh tep nguon phim goc: %s\n", movie_source_path);
+        free(temp_file_path);
         return NULL;
     }
 
+    free(temp_file_path);
     return deleted_movie;
 }
