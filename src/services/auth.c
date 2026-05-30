@@ -14,7 +14,7 @@ User *login() {
     char password[50];
 
     while (1) {
-        printf(BOLD_RED "\n===== LOGIN =====\n" RESET);
+        printf(BOLD_RED "\n===== DANG NHAP =====\n" RESET);
         printf("Ten dang nhap: ");
         fgets(username, sizeof(username), stdin);
         username[strcspn(username, "\n")] = '\0';

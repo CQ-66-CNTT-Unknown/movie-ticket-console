@@ -206,13 +206,13 @@ void create_screening() {
     }
 
     // Input screening details
-    printf("Nhap ngay va gio lich chieu (dinh dang YYYY-MM-DD HH:MM): ");
+    printf("Nhap ngay va gio lich chieu (dinh dang DD-MM-YYYY HH:MM): ");
     char datetime_str[50];
     fgets(datetime_str, sizeof(datetime_str), stdin);
     datetime_str[strcspn(datetime_str, "\n")] = '\0';
 
     struct tm time_struct = {0};
-    sscanf(datetime_str, "%d-%d-%d %d:%d", &time_struct.tm_year, &time_struct.tm_mon, &time_struct.tm_mday,
+    sscanf(datetime_str, "%d-%d-%d %d:%d", &time_struct.tm_mday, &time_struct.tm_mon, &time_struct.tm_year,
            &time_struct.tm_hour, &time_struct.tm_min);
 
     time_struct.tm_year -= 1900; // tm_year is years since 1900

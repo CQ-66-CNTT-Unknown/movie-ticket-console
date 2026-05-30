@@ -55,6 +55,94 @@ static void display_screenings(ScreeningArray *screenings) {
     printf("+------+----------------------------+---------------------+----------+------+\n");
 }
 
+static void display_available_movies(ScreeningArray *screenings) {
+    MovieArray *movies = get_all_movies(MOVIE_SOURCE_PATH);
+    if (movies == NULL)
+        return;
+
+    printf("\n+------+----------------------------+\n");
+    printf(BOLD_YELLOW "| %-4s | %-30s |\n", "ID", "Ten Phim" RESET);
+    printf("+------+----------------------------+\n");
+
+    for (int i = 0; i < movies->count; i++) {
+        // Check if this movie has any screening
+        bool has_screening = false;
+        for (int j = 0; j < screenings->count; j++) {
+            if (screenings->screenings[j].movie_id == movies->movies[i].movie_id) {
+                has_screening = true;
+                break;
+            }
+        }
+
+        if (has_screening) {
+            printf("| %-4d | %-26.26s |\n", movies->movies[i].movie_id, movies->movies[i].title);
+        }
+    }
+    printf("+------+----------------------------+\n");
+
+    if (movies->movies)
+        free(movies->movies);
+    free(movies);
+}
+
+static ScreeningArray *filter_future_screenings_by_movie(int movie_id, ScreeningArray *all_screenings) {
+    time_t now = time(NULL);
+    int capacity = 10;
+    ScreeningArray *result = (ScreeningArray *) malloc(sizeof(ScreeningArray));
+    result->screenings = (Screening *) malloc(capacity * sizeof(Screening));
+    result->count = 0;
+    result->capacity = capacity;
+
+    for (int i = 0; i < all_screenings->count; i++) {
+        Screening *s = &all_screenings->screenings[i];
+        // Check if screening is for selected movie and in the future
+        if (s->movie_id == movie_id && s->start_time > now) {
+            if (result->count >= result->capacity) {
+                result->capacity *= 2;
+                result->screenings = (Screening *) realloc(result->screenings, result->capacity * sizeof(Screening));
+            }
+            result->screenings[result->count++] = *s;
+        }
+    }
+
+    return result;
+}
+
+static ScreeningArray *filter_screenings_by_date(const char *date_str, ScreeningArray *all_screenings) {
+    int day, month, year;
+    if (sscanf(date_str, "%d-%d-%d", &day, &month, &year) != 3) {
+        return NULL;
+    }
+
+    struct tm target_date = {0};
+    target_date.tm_mday = day;
+    target_date.tm_mon = month - 1;
+    target_date.tm_year = year - 1900;
+    target_date.tm_isdst = -1;
+
+    time_t target_time = mktime(&target_date);
+    time_t next_day_time = target_time + 24 * 3600;
+
+    int capacity = 10;
+    ScreeningArray *result = (ScreeningArray *) malloc(sizeof(ScreeningArray));
+    result->screenings = (Screening *) malloc(capacity * sizeof(Screening));
+    result->count = 0;
+    result->capacity = capacity;
+
+    for (int i = 0; i < all_screenings->count; i++) {
+        Screening *s = &all_screenings->screenings[i];
+        if (s->start_time >= target_time && s->start_time < next_day_time && s->start_time > time(NULL)) {
+            if (result->count >= result->capacity) {
+                result->capacity *= 2;
+                result->screenings = (Screening *) realloc(result->screenings, result->capacity * sizeof(Screening));
+            }
+            result->screenings[result->count++] = *s;
+        }
+    }
+
+    return result;
+}
+
 // Display seating chart
 static void display_seat_map(int screening_id) {
     TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
@@ -213,25 +301,27 @@ static int generate_new_ticket_id() {
 }
 
 void book_ticket(int user_id) {
-    int actual_screening_id;
-    char actual_seat_code[10];
-
-    Screening *selected_screening = NULL;
-    ScreeningArray *screenings = get_all_screenings(SCREENING_SOURCE_PATH);
-
-    if (screenings == NULL || screenings->count == 0) {
+    // Load all screenings
+    ScreeningArray *all_screenings = get_all_screenings(SCREENING_SOURCE_PATH);
+    if (all_screenings == NULL || all_screenings->count == 0) {
         printf("Hien tai khong co suat chieu nao.\n");
-        if (screenings)
-            free(screenings);
+        if (all_screenings)
+            free(all_screenings);
         return;
     }
 
-    // 1. Select screening time
-    display_screenings(screenings);
-
+    // ========== Menu: Select search method ==========
+    int search_method = 0;
     while (true) {
-        printf("\nNhap ID suat chieu muon mua (0 de thoat): ");
-        if (scanf("%d", &actual_screening_id) != 1) {
+        printf("\n+================================================+\n");
+        printf("|              CHON CACH TIM KIEM                |\n");
+        printf("+================================================+\n");
+        printf("| 1. Tim kiem theo ID phim                       |\n");
+        printf("| 2. Tim kiem theo ngay chieu (dd-mm-yyyy)       |\n");
+        printf("| 0. Thoat                                       |\n");
+        printf("+================================================+\n");
+        printf("Nhap lua chon cua ban (0-2): ");
+        if (scanf("%d", &search_method) != 1) {
             while (getchar() != '\n')
                 ;
             printf("Vui long nhap so hop le!\n");
@@ -240,31 +330,154 @@ void book_ticket(int user_id) {
         while (getchar() != '\n')
             ;
 
-        if (actual_screening_id == 0) {
-            free(screenings->screenings);
-            free(screenings);
+        if (search_method == 0) {
+            free(all_screenings->screenings);
+            free(all_screenings);
+            return;
+        } else if (search_method == 1 || search_method == 2) {
+            break;
+        } else {
+            printf("Vui long chon tu 0 den 2!\n");
+        }
+    }
+
+    ScreeningArray *filtered_screenings = NULL;
+    int selected_movie_id = -1;
+
+    if (search_method == 1) {
+        // ========== SEARCH BY MOVIE ID ==========
+        printf("\n===== SUAT CHIEU THEO ID PHIM =====\n");
+        display_available_movies(all_screenings);
+
+        while (true) {
+            printf("\nNhap ID phim muon mua ve (0 de thoat): ");
+            if (scanf("%d", &selected_movie_id) != 1) {
+                while (getchar() != '\n')
+                    ;
+                printf("Vui long nhap so hop le!\n");
+                continue;
+            }
+            while (getchar() != '\n')
+                ;
+
+            if (selected_movie_id == 0) {
+                free(all_screenings->screenings);
+                free(all_screenings);
+                return;
+            }
+
+            // Check if selected movie exists in screenings
+            bool movie_found = false;
+            for (int i = 0; i < all_screenings->count; i++) {
+                if (all_screenings->screenings[i].movie_id == selected_movie_id) {
+                    movie_found = true;
+                    break;
+                }
+            }
+
+            if (!movie_found) {
+                printf("Loi: Phim khong ton tai hoac khong co lich chieu. Vui long chon lai.\n");
+                continue;
+            }
+            break;
+        }
+
+        filtered_screenings = filter_future_screenings_by_movie(selected_movie_id, all_screenings);
+    } else {
+        // ========== SEARCH BY DATE ==========
+        printf("\n===== SUAT CHIEU THEO NGAY =====\n");
+        char date_str[20];
+        while (true) {
+            printf("\nNhap ngay chieu (dd-mm-yyyy) hoac 0 de thoat: ");
+            scanf("%s", date_str);
+            while (getchar() != '\n')
+                ;
+
+            if (strcmp(date_str, "0") == 0) {
+                free(all_screenings->screenings);
+                free(all_screenings);
+                return;
+            }
+
+            filtered_screenings = filter_screenings_by_date(date_str, all_screenings);
+
+            if (filtered_screenings == NULL) {
+                printf("Loi: Dinh dang ngay khong hop le. Vui long nhap theo dung dinh dang (dd-mm-yyyy).\n");
+                continue;
+            }
+
+            if (filtered_screenings->count == 0) {
+                printf("Loi: Khong co suat chieu nao vao ngay %s. Vui long chon ngay khac.\n", date_str);
+                free(filtered_screenings->screenings);
+                free(filtered_screenings);
+                continue;
+            }
+            break;
+        }
+    }
+
+    // Exception E1: No available screenings
+    if (filtered_screenings->count == 0) {
+        printf("\n" BOLD_RED "Hien tai phim nay da het suat chieu trong ngay hoac da qua gio chieu. Vui long chon phim "
+               "khac.\n" RESET);
+        free(all_screenings->screenings);
+        free(all_screenings);
+        free(filtered_screenings->screenings);
+        free(filtered_screenings);
+        return;
+    }
+
+    // ========== Display filtered screenings and customer selects ==========
+    display_screenings(filtered_screenings);
+
+    int selected_screening_id = -1;
+    Screening *selected_screening = NULL;
+
+    while (true) {
+        printf("\nNhap ID suat chieu muon mua (0 de quay lai): ");
+        if (scanf("%d", &selected_screening_id) != 1) {
+            while (getchar() != '\n')
+                ;
+            printf("Vui long nhap so hop le!\n");
+            continue;
+        }
+        while (getchar() != '\n')
+            ;
+
+        if (selected_screening_id == 0) {
+            free(all_screenings->screenings);
+            free(all_screenings);
+            free(filtered_screenings->screenings);
+            free(filtered_screenings);
             return;
         }
 
+        // Find selected screening
         bool found = false;
-        for (int i = 0; i < screenings->count; i++) {
-            if (screenings->screenings[i].screening_id == actual_screening_id) {
-                selected_screening = &screenings->screenings[i];
+        for (int i = 0; i < filtered_screenings->count; i++) {
+            if (filtered_screenings->screenings[i].screening_id == selected_screening_id) {
+                selected_screening = &filtered_screenings->screenings[i];
                 found = true;
                 break;
             }
         }
 
-        if (!found)
+        if (!found) {
             printf("Loi: ID suat chieu khong ton tai. Vui long thu lai.\n");
-        else
-            break;
+            continue;
+        }
+        break;
     }
 
-    char customer_type_str[50];
-    float discount_rate = get_customer_discount(customer_type_str);
+    // ========== Get room from selected screening (mỗi suất chiếu có 1 phòng) ==========
+    int selected_room = selected_screening->room_number;
 
-    display_seat_map(actual_screening_id);
+    // ========== Display seating map ==========
+    display_seat_map(selected_screening_id);
+
+    // ========== Customer selects seat and validation ==========
+    char actual_seat_code[10];
+    TicketArray *all_tickets = get_all_tickets(TICKET_SOURCE_PATH);
 
     while (true) {
         printf("Nhap ma ghe (vi du: A1, E3) hoac Q de thoat: ");
@@ -272,44 +485,62 @@ void book_ticket(int user_id) {
         while (getchar() != '\n')
             ;
 
+        // User cancels
         if (strcmp(actual_seat_code, "Q") == 0 || strcmp(actual_seat_code, "q") == 0) {
-            free(screenings->screenings);
-            free(screenings);
+            free(all_screenings->screenings);
+            free(all_screenings);
+            free(filtered_screenings->screenings);
+            free(filtered_screenings);
+            if (all_tickets != NULL) {
+                free(all_tickets->tickets);
+                free(all_tickets);
+            }
             return;
         }
 
+        // Convert to uppercase
         actual_seat_code[0] = toupper(actual_seat_code[0]);
 
+        // Exception E2: Invalid seat format
         if (strlen(actual_seat_code) != 2 || actual_seat_code[0] < 'A' || actual_seat_code[0] > 'E' ||
             actual_seat_code[1] < '1' || actual_seat_code[1] > '5') {
-            printf("Loi: Ma ghe khong hop le (phai tu A1 den E5). Nhap lai.\n");
+            printf(BOLD_RED "Loi: Ma ghe khong hop le (Vui long nhap trong khoang tu A1 den E5).\n" RESET);
             continue;
         }
 
+        // Exception E3: Seat already reserved
         bool seat_taken = false;
-        TicketArray *tickets = get_all_tickets(TICKET_SOURCE_PATH);
-        if (tickets != NULL) {
-            for (int i = 0; i < tickets->count; i++) {
-                if (tickets->tickets[i].screening_id == actual_screening_id &&
-                    strcmp(tickets->tickets[i].seat_code, actual_seat_code) == 0) {
+        if (all_tickets != NULL) {
+            for (int i = 0; i < all_tickets->count; i++) {
+                if (all_tickets->tickets[i].screening_id == selected_screening_id &&
+                    strcmp(all_tickets->tickets[i].seat_code, actual_seat_code) == 0) {
                     seat_taken = true;
                     break;
                 }
             }
-            if (tickets->tickets)
-                free(tickets->tickets);
-            free(tickets);
         }
 
         if (seat_taken) {
-            printf("Loi: Ghe %s da co nguoi dat. Vui long chon ghe khac.\n", actual_seat_code);
+            printf(BOLD_RED "Loi: Ghe nay da co nguoi mua, vui long chon ghe khac.\n" RESET);
             continue;
         }
+
+        // Valid seat selected
         break;
     }
 
+    if (all_tickets != NULL) {
+        free(all_tickets->tickets);
+        free(all_tickets);
+    }
+
+    // ========== Customer information: type and services ==========
+    char customer_type_str[50];
+    float discount_rate = get_customer_discount(customer_type_str);
+
     float service_fee = get_services_fee();
 
+    // ========== Calculate bill ==========
     int seat_multiplier = (actual_seat_code[0] == 'E') ? 2 : 1;
 
     float base_price = selected_screening->price;
@@ -320,11 +551,18 @@ void book_ticket(int user_id) {
     char title[100];
     get_movie_title(selected_screening->movie_id, title, sizeof(title));
 
+    // ========== Display summary and confirmation ==========
+    time_t t = (time_t) selected_screening->start_time;
+    struct tm *tm_info = localtime(&t);
+    char time_str[20];
+    strftime(time_str, sizeof(time_str), "%d-%m-%Y %H:%M", tm_info);
+
     printf("\n+================================================+\n");
     printf("|             HOA DON THANH TOAN                 |\n");
     printf("+================================================+\n");
     printf("| Phim         : %-31s |\n", title);
-    printf("| ID Suat chieu: %-31d |\n", actual_screening_id);
+    printf("| Gio chieu    : %-31s |\n", time_str);
+    printf("| Phong chieu  : %-31d |\n", selected_room);
     printf("| Loai khach   : %-31s |\n", customer_type_str);
 
     if (seat_multiplier == 2) {
@@ -339,28 +577,36 @@ void book_ticket(int user_id) {
     printf("| TONG CONG    : %-27.0f VND |\n", total_bill);
     printf("+================================================+\n\n");
 
+    // ========== Customer confirms payment ==========
     if (!is_decision_yes("Xac nhan thanh toan va mua ve")) {
         printf("Da huy qua trinh mua ve.\n");
-        free(screenings->screenings);
-        free(screenings);
+        free(all_screenings->screenings);
+        free(all_screenings);
+        free(filtered_screenings->screenings);
+        free(filtered_screenings);
         return;
     }
 
+    // ========== Generate ticket and save ==========
     int new_ticket_id = generate_new_ticket_id();
     FILE *ticket_file = fopen(TICKET_SOURCE_PATH, "a");
     if (ticket_file == NULL) {
         printf("Loi: Khong the ghi ve vao tep du lieu!\n");
-        free(screenings->screenings);
-        free(screenings);
+        free(all_screenings->screenings);
+        free(all_screenings);
+        free(filtered_screenings->screenings);
+        free(filtered_screenings);
         return;
     }
-    fprintf(ticket_file, "%d,%d,%d,%s\n", new_ticket_id, actual_screening_id, user_id, actual_seat_code);
+    fprintf(ticket_file, "%d,%d,%d,%s\n", new_ticket_id, selected_screening_id, user_id, actual_seat_code);
     fclose(ticket_file);
 
-    printf("\n[HOAN TAT] Mua ve thanh cong! ID ve cua ban la: %d\n", new_ticket_id);
+    printf("\n" BOLD_GREEN "[HOAN TAT] Mua ve thanh cong! ID ve cua ban la: %d\n" RESET, new_ticket_id);
 
-    free(screenings->screenings);
-    free(screenings);
+    free(all_screenings->screenings);
+    free(all_screenings);
+    free(filtered_screenings->screenings);
+    free(filtered_screenings);
 }
 
 
