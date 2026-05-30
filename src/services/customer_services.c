@@ -45,7 +45,7 @@ static void display_screenings(ScreeningArray *screenings) {
         time_t t = (time_t) s->start_time;
         struct tm *tm_info = localtime(&t);
         char time_str[20];
-        strftime(time_str, sizeof(time_str), "%d/%m/%Y %H:%M", tm_info);
+        strftime(time_str, sizeof(time_str), "%d-%m-%Y %H:%M", tm_info);
 
         // Get the movie name
         char title[100];
@@ -408,7 +408,7 @@ static int display_user_tickets(int user_id) {
                 time_t t = (time_t) s->start_time;
                 struct tm *tm_info = localtime(&t);
                 char time_str[20];
-                strftime(time_str, sizeof(time_str), "%d/%m %H:%M", tm_info);
+                strftime(time_str, sizeof(time_str), "%d-%m-%Y %H:%M", tm_info);
 
                 // Check if screening has already happened
                 time_t now = time(NULL);
@@ -614,7 +614,7 @@ void view_purchase_history(int current_user_id) {
                 time_t t = (time_t) s->start_time;
                 struct tm *tm_info = localtime(&t);
                 char time_str[20];
-                strftime(time_str, sizeof(time_str), "%d/%m/%Y %H:%M", tm_info);
+                strftime(time_str, sizeof(time_str), "%d-%m-%Y %H:%M", tm_info);
 
                 // calculate projection status
                 time_t now = time(NULL);

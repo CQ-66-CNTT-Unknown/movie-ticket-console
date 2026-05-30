@@ -26,7 +26,6 @@ static int handle_input_id(const char *user_input) {
     return (int) value;
 }
 
-
 int input_id(const char *prompt, int buffer_size) {
     char *user_input = (char *) malloc((size_t) buffer_size);
     if (user_input == NULL)
@@ -49,22 +48,14 @@ int input_id(const char *prompt, int buffer_size) {
     return result;
 }
 
-void nhapSo(int *so) {
-    while (!scanf("%d", so)) {
-        while (getchar() != '\n')
-            ; // loại bỏ kí tự thừa trong buffer kể cả \n
-        printf("\nPhím được nhập không hợp lệ vui lòng nhập lại: ");
-    }
-}
-
-void deleteEnter(char *s) {
+void delete_enter(char *s) {
     char *pos = strchr(s, '\n');
     if (pos != NULL) {
         *pos = '\0';
     }
 }
 
-void inputNumber(int *choice) {
+void input_number(int *choice) {
     printf("Nhap lua chon: ");
     while (scanf("%d", choice) != 1) {
         while (getchar() != '\n')

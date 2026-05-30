@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 bool is_decision_yes(const char *prompt) {
-    printf("%s [y/N(Default)]: ", prompt);
+    printf("%s [y/N(Mac dinh)]: ", prompt);
     char decision;
     scanf("%c", &decision);
     int c;

@@ -4,7 +4,6 @@
 
 /**
  * @brief Display all available movies
- *
  */
 void display_all_movies();
 

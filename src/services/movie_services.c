@@ -20,7 +20,7 @@ static void print_movie_details(const Movie *movie) {
     printf("Thong tin phim:\n");
     printf("ID: %d\n", movie->movie_id);
     printf("Ten phim: %s\n", movie->title);
-    printf("Thoi luong: %d phut\n", movie->duration);
+    printf("Thoi luong: %d\n", movie->duration);
 }
 
 void display_all_movies() {
@@ -39,14 +39,14 @@ void display_all_movies() {
     }
 
     printf("\n===== TAT CA PHIM =====\n");
-    printf("%-8s | %-40s | %-10s\n", "ID", "Ten phim", "Thoi luong");
+    printf("%-8s | %-40s | %-10s\n", "ID", "Ten phim", "Thoi luong (p)");
     printf("-");
     for (int i = 0; i < 60; i++)
         printf("-");
     printf("\n");
 
     for (int i = 0; i < movie_array->count; i++) {
-        printf("%-8d | %-40s | %-10d phut\n", movie_array->movies[i].movie_id, movie_array->movies[i].title,
+        printf("%-8d | %-40s | %-10d\n", movie_array->movies[i].movie_id, movie_array->movies[i].title,
                movie_array->movies[i].duration);
     }
 
@@ -98,7 +98,7 @@ void search_movie_by_name() {
     char movie_input[MAX_MOVIE_NAME];
     printf("Nhap ten phim: ");
     fgets(movie_input, sizeof(movie_input), stdin);
-    deleteEnter(movie_input);
+    delete_enter(movie_input);
 
     // Find matching movies
     Movie results[100];
@@ -119,14 +119,14 @@ void search_movie_by_name() {
     }
 
     // Display results
-    printf("\n%-5s | %-40s | %-10s\n", "STT", "Ten phim", "Thoi luong");
+    printf("\n%-5s | %-40s | %-10s\n", "STT", "Ten phim", "Thoi luong (p)");
     printf("-");
     for (int i = 0; i < 60; i++)
         printf("-");
     printf("\n");
 
     for (int i = 0; i < result_count; i++) {
-        printf("%-5d | %-40s | %-10d phut\n", i + 1, results[i].title, results[i].duration);
+        printf("%-5d | %-40s | %-10d \n", i + 1, results[i].title, results[i].duration);
     }
 }
 
@@ -154,7 +154,7 @@ void add_movie() {
     char title[100];
     printf("Nhap ten phim: ");
     fgets(title, sizeof(title), stdin);
-    deleteEnter(title);
+    delete_enter(title);
 
     // Validate title is not empty
     if (strlen(title) == 0) {
@@ -226,17 +226,16 @@ void edit_movie() {
         return;
     }
 
-    printf("\n===== EDIT MOVIE =====\n");
+    printf("\n===== CHINH SUA PHIM =====\n");
     print_movie_details(found_movie);
 
     printf("\nBan muon chinh sua thong tin nao?\n");
     printf("1. Ten phim\n");
     printf("2. Thoi luong\n");
     printf("0. Huy bo\n");
-    printf("Nhap lua chon cua ban: ");
 
     int choice = -1;
-    inputNumber(&choice);
+    input_number(&choice);
 
     if (choice == 0) {
         printf("Chinh sua da bi huy.\n");
@@ -249,7 +248,7 @@ void edit_movie() {
         printf("Nhap ten phim moi: ");
         char new_title[100];
         fgets(new_title, sizeof(new_title), stdin);
-        deleteEnter(new_title);
+        delete_enter(new_title);
 
         if (strlen(new_title) == 0) {
             printf("Ten phim khong the de trong!\n");

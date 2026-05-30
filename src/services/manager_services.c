@@ -48,7 +48,7 @@ void sort_movie_stats_by_revenue(MovieStats *stats, int count) {
  * @brief Print the header of the revenue report table
  */
 static void print_revenue_report_header() {
-    printf("%-32s | %-16s | %-16s\n", "Movie Title", "Tickets Sold", "Revenue (VND)");
+    printf("%-32s | %-16s | %-16s\n", "Ten phim", "So ve da ban", "Doanh thu (VND)");
     int divider_length = 32 + 16 + 16 + (2 * 3); // Total width of the table
     for (int i = 0; i < divider_length; i++)
         printf("-");
@@ -141,7 +141,7 @@ void show_revenue_report() {
         total_tickets_sold += stats[i].tickets_sold;
     }
 
-    printf("Revenue Report:\n");
+    printf("Bao cao doanh thu:\n");
     print_revenue_report_header();
     print_movies_stats(stats, movies_array->count);
     printf("\n");
@@ -151,7 +151,7 @@ void show_revenue_report() {
         printf("-");
     printf("\n");
 
-    printf("%-32s | %-16d | %-16.0f\n", "Total", total_tickets_sold, total_revenue);
+    printf("%-32s | %-16d | %-16.0f\n", "Tong cong", total_tickets_sold, total_revenue);
 
     free(stats);
     free(tickets_array);
