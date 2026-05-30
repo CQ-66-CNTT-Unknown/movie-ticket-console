@@ -12,10 +12,10 @@ int input_id(const char *prompt, int buffer_size);
  * @brief delete the '\n' character of a string
  * @param s the pointer to string will be deleted Enter character.
  */
-void deleteEnter(char *s);
+void delete_enter(char *s);
 
 /**
  * @brief Prompts the user to enter a number to select a function or exit.
  * @param choice Pointer to the variable that stores the input value.
  */
-void inputNumber(int *choice);
+void input_number(int *choice);
