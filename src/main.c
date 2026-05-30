@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include <unistd.h>
+#include <stdlib.h>
+
 #include "../include/constanst.h"
 #include "../include/models/user.h"
 #include "../include/services/auth.h"
@@ -9,7 +10,6 @@
 #include "../include/services/screening_services.h"
 #include "../include/utils/menu.h"
 
-#include <stdlib.h>
 
 int main() {
     printf("Chao mung den voi he thong dat ve xem phim!\n");

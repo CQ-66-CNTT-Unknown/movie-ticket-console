@@ -94,7 +94,7 @@ void search_movie_by_name() {
         return;
     }
 
-    printf("\n===== SEARCH MOVIE BY NAME =====\n");
+    printf("\n===== TIM KIEM PHIM =====\n");
     char movie_input[MAX_MOVIE_NAME];
     printf("Nhap ten phim: ");
     fgets(movie_input, sizeof(movie_input), stdin);
